@@ -10,6 +10,10 @@ package matador;
  *
  * @author and3k5
  */
-public class GoToPrison {
-    
+public class GoToPrison extends Field{
+    @Override
+    public void Lands(Player P){
+      P.Position = 10;
+      P.InPrison = true;
+    }
 }

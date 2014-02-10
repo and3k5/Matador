@@ -10,6 +10,16 @@ package matador;
  *
  * @author and3k5
  */
-public class Start {
+public class Start extends Field{
+    @Override
+    public void Lands(Player P)
+    {
+        P.ChangeMoney(4000);
+    }
+    @Override
+    public void Passed(Player P)
+    {
+        P.ChangeMoney(4000);
+    }
     
 }

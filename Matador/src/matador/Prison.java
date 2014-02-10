@@ -10,6 +10,14 @@ package matador;
  *
  * @author and3k5
  */
-public class Prison {
-    
+public class Prison extends Field{
+    @Override
+    public void Lands(Player P)
+    {
+        
+    }
+    public void Prisoner()
+    {
+        
+    }
 }

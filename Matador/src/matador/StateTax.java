@@ -10,6 +10,10 @@ package matador;
  *
  * @author and3k5
  */
-public class StateTax {
-    
+public class StateTax extends Field{
+    @Override
+    public void Lands(Player P)
+    {
+        P.ChangeMoney(-2000);
+    }
 }
