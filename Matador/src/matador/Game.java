@@ -11,5 +11,8 @@ package matador;
  * @author Le Group Un
  */
 public class Game {
-    
+    public static void main(String[] args) {
+        // TODO code application logic here
+        
+    }
 }
