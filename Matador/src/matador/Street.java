@@ -19,7 +19,25 @@ public class Street extends Field {
     public int Owner;
     public int Houses;
     public boolean Mortgage;
-   
-    //+ Lands(p: Player): void
     
+    @Override
+    public void Lands (Player P)
+    {
+        /*
+        * If nobody owns it      
+        */
+        if (Owner == 0)
+        {
+            
+        }
+        /*
+        * If enemy lands on yours, a payout must happen
+        */
+        else if (Owner != PID)
+        {
+            //int Pay;
+            
+            
+            //P.ChangeMoney(Pay);
+        }
 }
