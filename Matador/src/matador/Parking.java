@@ -10,6 +10,11 @@ package matador;
  *
  * @author and3k5
  */
-public class Parking {
-    
+public class Parking extends Field{
+    public int Payout = 4000;
+    @Override
+    public void Lands(Player P)
+    {
+        P.ChangeMoney(Payout);
+    }
 }

@@ -10,6 +10,18 @@ package matador;
  *
  * @author and3k5
  */
-public class IncomeTax {
-    
+public class IncomeTax extends Field{
+    @Override
+    public void Lands(Player P)
+    {
+        int PMoney = P.GetMoney();
+        if (PMoney >= 40000)
+        {
+            P.ChangeMoney(-4000);
+            
+        }else{
+            int IT = (int)(PMoney * 0.1)*-1;
+            P.ChangeMoney(IT);
+        }
+    }
 }

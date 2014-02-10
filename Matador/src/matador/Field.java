@@ -11,5 +11,13 @@ package matador;
  * @author and3k5
  */
 public class Field {
-    
+    public int PID;
+    public void Passed(Player p)
+    {
+        
+    }
+    public void Lands(Player p)
+    {
+        
+    }
 }

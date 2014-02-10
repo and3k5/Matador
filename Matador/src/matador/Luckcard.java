@@ -12,4 +12,23 @@ package matador;
  */
 public class Luckcard {
     
+    
+    static void TryCard(Player P)
+    {
+        String[] Luckcards = {"Gå til fængsel",""};
+    
+        int length = Luckcards.length;
+        int randomcard;
+        randomcard = (int) (length * Math.random() + 1);
+        
+        switch (Luckcards[randomcard]){
+            case "Gå til fængsel":
+                P.InPrison = true;
+                P.Position = 10;
+                break;
+            case "":
+                break;
+        }
+    }
+    
 }
