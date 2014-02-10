@@ -10,6 +10,16 @@ package matador;
  *
  * @author and3k5
  */
-public class Street {
+public class Street extends Field {
+    
+    public String Name;
+    public int Price;
+    public int Taxes;
+    public int GroupID;
+    public int Owner;
+    public int Houses;
+    public boolean Mortgage;
+   
+    //+ Lands(p: Player): void
     
 }
