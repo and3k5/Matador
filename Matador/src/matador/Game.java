@@ -8,8 +8,17 @@
 package matador;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+import org.xml.sax.*;
+import org.w3c.dom.*;
 
 /**
  * @author Le Group Un
@@ -57,5 +66,24 @@ public class Game {
             players.add(player);
         }
         System.out.println(players);
+        readXML();
+    }
+    
+    public static void readXML() {
+        try {
+            // read xml entries
+            String path="src/matador/Cards.xml";
+            Document builder = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path);
+            System.out.println(builder.getDocumentElement().getTagName());
+        } catch (ParserConfigurationException ex) {
+            System.out.println("Could not read XML file..");
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            System.out.println("Could not read XML file..");
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("Could not read XML file..");
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
