@@ -53,7 +53,6 @@ public class Player {
         * Changes the money you have if you pass start, are parking,
         * Income Tax or State Tax and so on.
         */
-        
         Money = Money + value;
         return Money;
     } 

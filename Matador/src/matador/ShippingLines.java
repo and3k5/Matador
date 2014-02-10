@@ -33,10 +33,12 @@ public class ShippingLines extends Field {
         */
         else if (Owner != PID)
         {
-            //int Pay;
+            if (P.InPrison = false)
+            {
+                //int Pay;
             
-            
-            //P.ChangeMoney(Pay);
+                //P.ChangeMoney(Pay);
+            }
         }
         
     }   

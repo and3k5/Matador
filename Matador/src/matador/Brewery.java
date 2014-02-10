@@ -28,14 +28,17 @@ public class Brewery extends Field {
             
         }
         /*
-        * If enemy lands on yours, a payout must happen (Once or twice
-        * the eyes on the dices
+        * If you land on a enemy's enemy lands on yours, a payout must happen 
+        * (Once or twice the eyes on the dices)
         */
         else if (Owner != PID)
         {
-            //int Pay;
+            if (P.InPrison = false)
+            {
+                //int Pay;
             
-            //P.ChangeMoney(Pay);
+                //P.ChangeMoney(Pay);
+            }
         }
     }
 }
