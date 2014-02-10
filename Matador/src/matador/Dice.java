@@ -11,5 +11,13 @@ package matador;
  * @author and3k5
  */
 public class Dice {
+    // Number of dice
+    public int number;
     
+    public Dice() {
+        this.number = 0;
+    }
+    public void Throw() {
+        this.number=(int)(1+Math.random()*6);
+    }
 }

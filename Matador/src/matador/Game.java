@@ -7,12 +7,22 @@
 
 package matador;
 
+import java.util.ArrayList;
+
 /**
  * @author Le Group Un
  */
 public class Game {
+    public static int turn;
+    public static ArrayList<Player> players;
+    public static ArrayList<Field> fields;
+    public static ArrayList<StreetGroup> streetgroups;
+    public static Dice dice;
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Initialize vars
+        turn=0;
+        PlayerNames pnForm = new PlayerNames();
+        pnForm.setVisible(true);
         
     }
 }
