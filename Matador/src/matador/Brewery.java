@@ -55,19 +55,21 @@ public class Brewery extends Field {
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
-                //BREWERY ISNT A SHIPPING LINE! (CHANGE MONEY AMOUNT AND FIX DICES)
                 int cnt = CountBrewery();
+                Player OPlayer = Game.players.get(Owner);
                 if (cnt == 1)
                 {
                     int Pay;
                     Pay = 100*(Game.dices[0].number + Game.dices[1].number);
-                    P.ChangeMoney(Pay);
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 else if (cnt == 2)
                 {
                     int Pay;
                     Pay = 200*(Game.dices[0].number + Game.dices[1].number);
-                    P.ChangeMoney(Pay);
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
             }
         }
