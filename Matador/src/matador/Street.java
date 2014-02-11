@@ -20,20 +20,28 @@ public class Street extends Field {
     public int Houses;
     public boolean Mortgage;
     
+    public Street()
+    {
+        Price = 0;
+        Owner = -1;
+        Houses = 0;
+        Mortgage = false;
+    }
+    
     @Override
     public void Lands (Player P)
     {
         /*
         * If nobody owns it      
         */
-        if (Owner == 0)
+        if (Owner == -1)
         {
             
         }
         /*
         * If enemy lands on yours, a payout must happen
         */
-        else if (Owner != PID)
+        else if (Owner != Game.players.indexOf(P))
         {
             if (P.InPrison = false)
             {
