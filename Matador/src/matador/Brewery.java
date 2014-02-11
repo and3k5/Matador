@@ -44,17 +44,13 @@ public class Brewery extends Field {
     @Override
     public void Lands (Player P)
     {
-                /*
-        * If nobody owns it      
-        */
+        //If nobody owns it      
         if (Owner == -1)
         {
             
         }
-        /*
-        * If you land on a enemy's enemy lands on yours, a payout must happen 
-        * (Once or twice the eyes on the dices)
-        */
+        //If you land on a enemy's enemy lands on yours, a payout must happen 
+        //(Once or twice the eyes on the dices)
         else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)

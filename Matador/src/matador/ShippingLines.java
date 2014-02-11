@@ -46,16 +46,12 @@ public class ShippingLines extends Field {
     @Override
     public void Lands (Player P)
     {
-        /*
-        * If nobody owns it      
-        */
+        //If nobody owns it      
         if (Owner == -1)
         {
             
         }
-        /*
-        * If enemy lands on yours, a payout must happen
-        */
+        //If enemy lands on yours, a payout must happen
         else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)
