@@ -41,7 +41,7 @@ public class Street extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
-            
+            Game.requestBuy(P, this);
         }
         //If enemy lands on yours, a payout must happen
         else if (Owner != Game.players.indexOf(P))

@@ -47,7 +47,7 @@ public class Brewery extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
-            
+            Game.requestBuy(P, this);
         }
         //If you land on a enemy's enemy lands on yours, a payout must happen 
         //(Once or twice the eyes on the dices)

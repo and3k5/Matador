@@ -49,7 +49,7 @@ public class ShippingLines extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
-            
+            Game.requestBuy(P, this);
         }
         //If you land on enemy players shipping line
         else if (Owner != Game.players.indexOf(P))
