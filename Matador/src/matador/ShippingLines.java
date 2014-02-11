@@ -18,13 +18,31 @@ public class ShippingLines extends Field {
     public int Taxes;
     public boolean Mortgage;
     
+    private int CountShippingLines()
+    {
+        int CountShips = 0;
+        for (Field F: Game.fields )
+        {
+            if(F.getClass()==ShippingLines.class)
+            {
+                if (((ShippingLines)F).Owner==this.Owner)
+                {
+                    CountShips++;
+                    
+                }
+            }
+        }
+        return CountShips;
+    }
+    
+    
     @Override
     public void Lands (Player P)
     {
         /*
         * If nobody owns it      
         */
-        if (Owner == 0)
+        if (Owner == -1)
         {
             
         }
@@ -33,33 +51,34 @@ public class ShippingLines extends Field {
         */
         else if (Owner != PID)
         {
-            if (P.InPrison = false)
+            if ((Game.players.get(Owner)).InPrison == false)
             {
-                /*if (1 is owned by enemy)
+                int cnt = CountShippingLines();
+                if (cnt == 1)
                 {
                     int Pay;
+                    Pay = 500;
+                    P.ChangeMoney(Pay);
+                }
+                else if (cnt == 2)
+                {
+                    int Pay;
+                    Pay = 1000;    
+                    P.ChangeMoney(Pay);
+                }
+                else if (cnt == 3)
+                {
+                    int Pay;
+                    Pay = 2000;    
+                    P.ChangeMoney(Pay);
+                }
+                else if (cnt == 4)
+                {
+                    int Pay;
+                    Pay = 4000;
+                    P.ChangeMoney(Pay);
+                }
                 
-                    P.ChangeMoney(Pay);
-                }
-                else if (2 is owned by enemy)
-                {
-                    int Pay;
-                        
-                    P.ChangeMoney(Pay);
-                }
-                else if (3 is owned by enemy)
-                {
-                    int Pay;
-                        
-                    P.ChangeMoney(Pay);
-                }
-                else if (4 is owned by enemy)
-                {
-                    int Pay;
-                        
-                    P.ChangeMoney(Pay);
-                }
-                */
             }
         }
         

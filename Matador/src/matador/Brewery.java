@@ -17,13 +17,29 @@ public class Brewery extends Field {
     public String Name;
     public boolean Mortgage;
     
+        private int CountBrewery()
+    {
+        int CountBrew = 0;
+        for (Field F: Game.fields )
+        {
+            if(F.getClass()==Brewery.class)
+            {
+                if (((Brewery)F).Owner==this.Owner)
+                {
+                    CountBrew++;               
+                }
+            }
+        }
+        return CountBrew;
+    }
+    
     @Override
     public void Lands (Player P)
     {
                 /*
         * If nobody owns it      
         */
-        if (Owner == 0)
+        if (Owner == -1)
         {
             
         }
@@ -33,21 +49,22 @@ public class Brewery extends Field {
         */
         else if (Owner != PID)
         {
-            if (P.InPrison = false)
+            if ((Game.players.get(Owner)).InPrison == false)
             {
-                /*if (BOTH OWNED)
+                //BREWERY ISNT A SHIPPING LINE! (CHANGE MONEY AMOUNT AND FIX DICES)
+                int cnt = CountBrewery();
+                if (cnt == 1)
                 {
                     int Pay;
-                
+                    Pay = 500;
                     P.ChangeMoney(Pay);
                 }
-                else if (only 1 owned)
+                else if (cnt == 2)
                 {
                     int Pay;
-                        
+                    Pay = 1000;    
                     P.ChangeMoney(Pay);
                 }
-                */
             }
         }
     }
