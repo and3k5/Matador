@@ -44,34 +44,32 @@ public class Brewery extends Field {
     @Override
     public void Lands (Player P)
     {
-                /*
-        * If nobody owns it      
-        */
+        //If nobody owns it      
         if (Owner == -1)
         {
             
         }
-        /*
-        * If you land on a enemy's enemy lands on yours, a payout must happen 
-        * (Once or twice the eyes on the dices)
-        */
+        //If you land on a enemy's enemy lands on yours, a payout must happen 
+        //(Once or twice the eyes on the dices)
         else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
-                //BREWERY ISNT A SHIPPING LINE! (CHANGE MONEY AMOUNT AND FIX DICES)
                 int cnt = CountBrewery();
+                Player OPlayer = Game.players.get(Owner);
                 if (cnt == 1)
                 {
                     int Pay;
                     Pay = 100*(Game.dices[0].number + Game.dices[1].number);
-                    P.ChangeMoney(Pay);
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 else if (cnt == 2)
                 {
                     int Pay;
                     Pay = 200*(Game.dices[0].number + Game.dices[1].number);
-                    P.ChangeMoney(Pay);
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
             }
         }
