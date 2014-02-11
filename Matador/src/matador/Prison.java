@@ -26,7 +26,7 @@ public class Prison extends Field{
         Object[] options = new Object[3];
         options[0] = "Kast med Terningerne";
         options[1] = "Betal 1000";
-        int GetOutCard = 1;
+        int GetOutCard = 0;
         if (GetOutCard > 0)
         {
             options[2] = "Brug lykke kort";
