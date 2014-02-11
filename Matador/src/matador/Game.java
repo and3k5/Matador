@@ -35,17 +35,16 @@ public class Game {
         players=new ArrayList<>();
         fields=new ArrayList<>();
         streetgroups=new ArrayList<>();
-        dices[0]=new Dice();
-        dices[1]=new Dice();
+        dices = new Dice[] {new Dice(),new Dice()};
+        // Shows a form to make players
         PlayerNames pnForm = new PlayerNames();
         pnForm.setVisible(true);
     }
     
     public static void StartGame(ArrayList<String> names) {
-        System.out.println("StartGame");
-        System.out.println(names);
-        // More to come XML
-        // fields.add(.....)
+        // When player form is done, this function is called
+        // Colors for players.
+        // This ensures that the players don't have the same color
         ArrayList<Color> usedColors = new ArrayList<>();
         int divisor=4;
         for (String name : names) {
@@ -66,53 +65,118 @@ public class Game {
             player.Color = new Color(tmp.getRGB());
             players.add(player);
         }
-        System.out.println(players);
+        // Read XML
         readXML();
     }
     
     public static void readXML() {
         try {
             // read xml entries
+            // Reinitialize arrays
+            fields = new ArrayList<>();
+            streetgroups = new ArrayList<>();
+            // Path to the XML file
             String path="src/matador/Cards.xml";
+            // Document builder factory, document builder, and so on...
             DocumentBuilderFactory docBuildFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder=docBuildFactory.newDocumentBuilder();
             Document doc=docBuilder.parse(path);
+            // Root element
             Element element = doc.getDocumentElement();
+            // This is the node containing all fields
             NodeList dFields;
             dFields = element.getElementsByTagName("Fields").item(0).getChildNodes();
+            // This is the node containing all streetgroups
             NodeList dStreetGroups;
-            dStreetGroups = element.getElementsByTagName("Fields").item(0).getChildNodes();
+            dStreetGroups = element.getElementsByTagName("StreetGroups").item(0).getChildNodes();
+            // Import street groups
+            for (int i=0;i<dStreetGroups.getLength();i++) {
+                Node sNode = dStreetGroups.item(i);
+                // This if case ensures that the node is a node.. (Confusing)
+                if (sNode.getNodeType()==Node.ELEMENT_NODE) {
+                    Element groupnode = (Element) sNode;
+                    StreetGroup sgrp = new StreetGroup();
+                    Element color = (Element)groupnode.getElementsByTagName("Color").item(0);
+                    sgrp.color = new Color(Integer.parseInt(getNodeValue("R",color)),Integer.parseInt(getNodeValue("G",color)),Integer.parseInt(getNodeValue("B",color)));
+                    // add the streetgroup to the arraylist
+                    streetgroups.add(sgrp);
+                }
+            }
+            // Import all fields
             for (int i=0;i<dFields.getLength();i++) {
-                Node field=dFields.item(i);
-                Element fieldnode = (Element) field;
-                switch (getNodeValue("Type",fieldnode)) {
-                    case "Street":
-                        Street street = new Street();
-                        street.GroupID = Integer.parseInt(getNodeValue("GroupID",fieldnode));
-                        street.Name = getNodeValue("Name",fieldnode);
-                        street.Price = Integer.parseInt(getNodeValue("Price",fieldnode));
-                        break;
-                    case "TryLuck":
-                        break;
-                    case "Start":
-                        break;
-                    case "IncomeTax":
-                        break;
-                    case "ShippingLines":
-                        break;
-                    case "Prison":
-                        break;
-                    case "Brewery":
-                        break;
-                    case "Parking":
-                        break;
-                    case "GoToPrison":
-                        break;
-                    case "StateTax":
-                        break;
-                    default:
-                        System.out.println("Weird XML");
-                        break;
+                Node fNode = dFields.item(i);
+                // If the node is a node...
+                if (fNode.getNodeType()==Node.ELEMENT_NODE) {
+                    Element fieldnode = (Element) dFields.item(i);
+                    // This switch case sort out the type of fields
+                    switch (getNodeValue("Type",fieldnode)) {
+                        case "Street":
+                            // Street (Gade)
+                            Street street = new Street();
+                            street.GroupID = Integer.parseInt(getNodeValue("GroupID",fieldnode));
+                            street.Name = getNodeValue("Name",fieldnode);
+                            street.Price = Integer.parseInt(getNodeValue("Price",fieldnode));
+                            // Taxes for other users landing on an owned field
+                            Element prices = (Element)fieldnode.getElementsByTagName("Taxes").item(0);
+                            street.Taxes[0]=Integer.parseInt(getNodeValue("NoHouse",prices));
+                            street.Taxes[1]=Integer.parseInt(getNodeValue("OneHouse",prices));
+                            street.Taxes[2]=Integer.parseInt(getNodeValue("TwoHouse",prices));
+                            street.Taxes[3]=Integer.parseInt(getNodeValue("ThreeHouse",prices));
+                            street.Taxes[4]=Integer.parseInt(getNodeValue("FourHouse",prices));
+                            street.Taxes[5]=Integer.parseInt(getNodeValue("Hotel",prices));
+                            street.HousePrice = Integer.parseInt(getNodeValue("HousePrice",fieldnode));
+                            street.HotelPrice = Integer.parseInt(getNodeValue("HotelPrice",fieldnode));
+                            // add street to array
+                            fields.add(street);
+                            break;
+                        case "TryLuck":
+                            // TryLuck (prøv lykken)
+                            fields.add(new TryLuck());
+                            break;
+                        case "Start":
+                            // Start field..
+                            fields.add(new Start());
+                            break;
+                        case "IncomeTax":
+                            // IncomeTax (Inkomstskat)
+                            fields.add(new IncomeTax());
+                            break;
+                        case "ShippingLines":
+                            // Shipping Lines (Redderier);
+                            ShippingLines ship = new ShippingLines();
+                            ship.Name = getNodeValue("Name",fieldnode);
+                            ship.SubName = getNodeValue("Subname",fieldnode);
+                            ship.Price = Integer.parseInt(getNodeValue("Price",fieldnode));
+                            fields.add(ship);
+                            break;
+                        case "Prison":
+                            // Prison (fængsel)
+                            fields.add(new Prison());
+                            break;
+                        case "Brewery":
+                            // Brewery (Bryggeri)
+                            Brewery brew = new Brewery();
+                            brew.Name = getNodeValue("Name", fieldnode);
+                            brew.Price = Integer.parseInt(getNodeValue("Price", fieldnode));
+                            fields.add(brew);
+                            break;
+                        case "Parking":
+                            // Parking (Parkering)
+                            fields.add(new Parking());
+                            break;
+                        case "GoToPrison":
+                            // GoToPrison (Gå til fængsel)
+                            fields.add(new GoToPrison());
+                            break;
+                        case "StateTax":
+                            // StateTax (Stats Skat)
+                            fields.add(new StateTax());
+                            break;
+                        default:
+                            // If this should appear in the console, then we're screwed
+                            System.out.println("Weird XML");
+                            break;
+                    }
                 }
             }
         } catch (ParserConfigurationException ex) {
@@ -125,8 +189,19 @@ public class Game {
             System.out.println("Could not read XML file..");
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("XML function done");
     }
     private static String getNodeValue(String property,Element e) {
-        return e.getElementsByTagName(property).item(0).getChildNodes().item(0).getNodeValue();
+        // An easy way to read properties from a node
+        try {
+            NodeList nodes;
+            nodes = e.getElementsByTagName(property).item(0).getChildNodes();
+            Node node = (Node)nodes.item(0);
+            return node.getNodeValue();
+        }
+        catch (NullPointerException err) {
+            System.out.println("Error reading: "+property);
+        }
+        return null;
     }
 }

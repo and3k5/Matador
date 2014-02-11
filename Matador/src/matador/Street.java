@@ -14,8 +14,10 @@ public class Street extends Field {
     
     public String Name;
     public int Price;
-    public int Taxes;
+    public int[] Taxes;
     public int GroupID;
+    public int HousePrice;
+    public int HotelPrice;
     public int Owner;
     public int Houses;
     public boolean Mortgage;
@@ -26,6 +28,11 @@ public class Street extends Field {
         Owner = -1;
         Houses = 0;
         Mortgage = false;
+        Taxes = new int[]{0,0,0,0,0,0};
+        GroupID=-1;
+        HousePrice=0;
+        HotelPrice=0;
+        Name="";
     }
     
     @Override
