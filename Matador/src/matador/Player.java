@@ -46,7 +46,10 @@ public class Player {
         
         return Money;
     }
-    
+    public int ChangePosition(int p) {
+        int fields=Game.fields.size();
+        return Position=((Position+p)%fields+fields)%fields;
+    }
     public int ChangeMoney(int value)
     {
         /*
