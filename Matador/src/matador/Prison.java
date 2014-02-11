@@ -31,7 +31,21 @@ public class Prison extends Field{
         {
             options[2] = "Brug lykke kort";
         }
-        JOptionPane.showOptionDialog(null, "Tryk på en knap", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
-        
+        int OBP = JOptionPane.showOptionDialog(null, "Tryk på en knap", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+        if (OBP == 0)
+        {
+            if (Game.dices[0].number == Game.dices[1].number)
+            {
+                P.InPrison = false;
+                P.Position = 10 + (Game.dices[0].number + Game.dices[1].number);
+                Game.fields.get(P.Position).Lands(P);
+            }
+        }else if (OBP == 1){
+            P.InPrison = false;
+            P.ChangeMoney(-1000);
+        }else if (OBP == 2){
+            P.InPrison = false;
+            P.GetOutCard = P.GetOutCard - 1;
+        }
     }
 }

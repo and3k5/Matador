@@ -21,6 +21,7 @@ public class Luckcard {
         String Text;
         int length = Luckcards.length;
         int randomcard;
+        int OtherP;
         randomcard = new Random().nextInt(length-1); //(int) (length * Math.random());
         switch (Luckcards[randomcard]){
             case 1:
@@ -129,6 +130,11 @@ public class Luckcard {
                 break;
             case 24:
                 Text = "Det er Deres fødselsdag. Modtag af hver medspiller kr. 200.";
+                
+                for()
+                {
+                    
+                }
                 /*
                 TODO GET MONEY OTHER PLAYERS
                 */
