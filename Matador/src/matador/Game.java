@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -49,6 +50,7 @@ public class Game {
         int divisor=4;
         for (String name : names) {
             Player player = new Player();
+            player.Name = name;
             Color tmp;
             Random rand = new Random();
             boolean breakLoop;
@@ -70,7 +72,34 @@ public class Game {
         GameLoop();
     }
     public static int requestBuy(Player theCustomer,Field field) {
-        return -1;
+        Object[] options = new Object[2];
+        options[0] = "Køb stedet";
+        options[1] = "Køb ikke";
+        String name="";
+        String type="";
+        int price=0;
+        if (field.getClass()==Brewery.class) {
+            Brewery b = (Brewery)field;
+            name=b.Name;
+            type="Bryggeriet";
+            price = b.Price;
+        }else if(field.getClass()==ShippingLines.class) {
+            ShippingLines b = (ShippingLines)field;
+            name=b.Name+" ("+b.SubName+")";
+            type="Redderiet";
+            price = b.Price;
+        }else if(field.getClass()==Street.class) {
+            Street b = (Street)field;
+            name=b.Name;
+            type="Gaden";
+            price = b.Price;
+        }else{
+            name ="fejl";
+            type = "fejl";
+            price = -1;
+        }
+        int choice=JOptionPane.showOptionDialog(null, theCustomer.Name+":\n"+type+" '"+name+"' er til salg for "+price+" kr.\nVil du købe stedet?", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+        return choice;
     }
     private static void GameLoop() {
         // The game loop
@@ -78,7 +107,7 @@ public class Game {
         boolean trackDices = false;
         int dicesEqual = 0;
         while (GameRunning) {
-            for (int i=0;i<players.size();i++) {
+            for (int i=0;i<players.size();i++) { 
                 currentPlayer = i;
                 Player player = players.get(currentPlayer);
                 dices[0].Throw();
