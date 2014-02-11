@@ -12,12 +12,20 @@ package matador;
  */
 public class Brewery extends Field {
     
-    public int Taxes;
     public int Owner;
+    public int Price;
     public String Name;
     public boolean Mortgage;
     
-        private int CountBrewery()
+    public Brewery()
+    {
+        Owner = -1;
+        Price = 0;
+        Mortgage = false;
+    }
+    
+    
+    private int CountBrewery()
     {
         int CountBrew = 0;
         for (Field F: Game.fields )
@@ -47,7 +55,7 @@ public class Brewery extends Field {
         * If you land on a enemy's enemy lands on yours, a payout must happen 
         * (Once or twice the eyes on the dices)
         */
-        else if (Owner != PID)
+        else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {

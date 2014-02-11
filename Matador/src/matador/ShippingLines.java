@@ -14,9 +14,17 @@ public class ShippingLines extends Field {
     
     public int Owner;
     public String Name;
-    public int Prices;
-    public int Taxes;
+    public String SubName;
+    public int Price;
     public boolean Mortgage;
+    
+    public ShippingLines()
+    {
+        Owner = -1;
+        Price = 0;
+        Mortgage = false;
+    }
+    
     
     private int CountShippingLines()
     {
@@ -28,7 +36,6 @@ public class ShippingLines extends Field {
                 if (((ShippingLines)F).Owner==this.Owner)
                 {
                     CountShips++;
-                    
                 }
             }
         }
@@ -49,7 +56,7 @@ public class ShippingLines extends Field {
         /*
         * If enemy lands on yours, a payout must happen
         */
-        else if (Owner != PID)
+        else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
