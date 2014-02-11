@@ -85,7 +85,11 @@ public class Luckcard {
                 break;
             case 15:
                 Text = "Ryk frem til Vimmelskaftet. Hvis de passerer 'START', indkasser da kr. 4.000.";
+                if (P.Position>32) {
+                    // User has to pass start
+                }
                 P.Position=32;
+                
                 /*
                 TODO PASS START GET MONEY
                 */
@@ -100,6 +104,8 @@ public class Luckcard {
                 break;
             case 18:
                 Text = "Tag med den nærmeste færge. Flyt brikken frem, og hvis De passerer 'START', indkasser da kr. 4.000.";
+                int[] shippingLines = new int[]{5,15,25,35};
+                
                 /*
                 TODO MAKE THINGS (Anders)
                 redderri pos 5 15 25 35

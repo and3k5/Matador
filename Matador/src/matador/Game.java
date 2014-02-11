@@ -67,9 +67,56 @@ public class Game {
         }
         // Read XML
         readXML();
+        GameLoop();
+    }
+    public static int requestBuy(Player theCustomer,Field field) {
+        return -1;
+    }
+    private static void GameLoop() {
+        // The game loop
+        boolean GameRunning = true;
+        boolean trackDices = false;
+        int dicesEqual = 0;
+        while (GameRunning) {
+            for (int i=0;i<players.size();i++) {
+                currentPlayer = i;
+                Player player = players.get(currentPlayer);
+                dices[0].Throw();
+                dices[1].Throw();
+                if (!player.InPrison) {
+                    // Player is not in prison
+                    if (dices[0].number==dices[1].number) {
+                        if (!trackDices) {
+                            trackDices=true;
+                            dicesEqual=0;
+                        }
+                        dicesEqual++;
+                        if (dicesEqual==3) {
+                            new GoToPrison().Lands(player);
+                            trackDices=false;
+                            dicesEqual=0;
+                        }else{
+                            i--;
+                        }
+                    }else{
+                        trackDices=false;
+                        dicesEqual=0;
+                    }
+                    int diceValue=dices[0].number+dices[1].number;
+                    for (int tmpPos=0;tmpPos<diceValue-1;tmpPos++) {
+                        player.Position++;
+                        fields.get(player.Position).Passed(player);
+                    }
+                    fields.get(++player.Position).Lands(player);
+                }else{
+                    // Player is in prison
+                    fields.get(player.Position).Lands(player);
+                }
+            }
+        }
     }
     
-    public static void readXML() {
+    private static void readXML() {
         try {
             // read xml entries
             // Reinitialize arrays
