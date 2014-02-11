@@ -35,9 +35,31 @@ public class ShippingLines extends Field {
         {
             if (P.InPrison = false)
             {
-                //int Pay;
-            
-                //P.ChangeMoney(Pay);
+                /*if (1 is owned by enemy)
+                {
+                    int Pay;
+                
+                    P.ChangeMoney(Pay);
+                }
+                else if (2 is owned by enemy)
+                {
+                    int Pay;
+                        
+                    P.ChangeMoney(Pay);
+                }
+                else if (3 is owned by enemy)
+                {
+                    int Pay;
+                        
+                    P.ChangeMoney(Pay);
+                }
+                else if (4 is owned by enemy)
+                {
+                    int Pay;
+                        
+                    P.ChangeMoney(Pay);
+                }
+                */
             }
         }
         

@@ -35,9 +35,19 @@ public class Brewery extends Field {
         {
             if (P.InPrison = false)
             {
-                //int Pay;
-            
-                //P.ChangeMoney(Pay);
+                /*if (BOTH OWNED)
+                {
+                    int Pay;
+                
+                    P.ChangeMoney(Pay);
+                }
+                else if (only 1 owned)
+                {
+                    int Pay;
+                        
+                    P.ChangeMoney(Pay);
+                }
+                */
             }
         }
     }

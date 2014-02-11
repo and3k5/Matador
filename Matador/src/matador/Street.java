@@ -42,4 +42,5 @@ public class Street extends Field {
                 //P.ChangeMoney(Pay);
             }
         }
+    }
 }
