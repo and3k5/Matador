@@ -26,7 +26,7 @@ public class ShippingLines extends Field {
     }
     
     
-    private int CountShippingLines()
+    public int CountShippingLines()
     {
         int CountShips = 0;
         for (Field F: Game.fields )
@@ -51,35 +51,41 @@ public class ShippingLines extends Field {
         {
             
         }
-        //If enemy lands on yours, a payout must happen
+        //If you land on enemy players shipping line
         else if (Owner != Game.players.indexOf(P))
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
+                
                 int cnt = CountShippingLines();
+                Player OPlayer = Game.players.get(Owner);
                 if (cnt == 1)
                 {
                     int Pay;
-                    Pay = 500;
+                    Pay = -500;
                     P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 2)
                 {
                     int Pay;
-                    Pay = 1000;    
+                    Pay = -1000;    
                     P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 3)
                 {
                     int Pay;
-                    Pay = 2000;    
+                    Pay = -2000;    
                     P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 4)
                 {
                     int Pay;
-                    Pay = 4000;
+                    Pay = -4000;
                     P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
                 }
                 
             }
