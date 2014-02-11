@@ -6,6 +6,8 @@
 
 package matador;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import static java.awt.event.KeyEvent.*;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class PlayerNames extends javax.swing.JFrame {
      */
     public PlayerNames() {
         initComponents();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));
     }
 
     /**
