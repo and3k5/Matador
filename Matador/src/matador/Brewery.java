@@ -64,13 +64,13 @@ public class Brewery extends Field {
                 if (cnt == 1)
                 {
                     int Pay;
-                    Pay = 500;
+                    Pay = 100*(Game.dices[0].number + Game.dices[1].number);
                     P.ChangeMoney(Pay);
                 }
                 else if (cnt == 2)
                 {
                     int Pay;
-                    Pay = 1000;    
+                    Pay = 200*(Game.dices[0].number + Game.dices[1].number);
                     P.ChangeMoney(Pay);
                 }
             }
