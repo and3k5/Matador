@@ -21,7 +21,7 @@ public class Luckcard {
         String Text;
         int length = Luckcards.length;
         int randomcard;
-        randomcard = new Random().nextInt(length-1); //(int) (length * Math.random());
+        randomcard = new Random().nextInt(length-1);
         switch (Luckcards[randomcard]){
             case 1:
                 Text = "Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer 'START', indkasserer De ikke kr. 4000.";
@@ -63,12 +63,12 @@ public class Luckcard {
                 break;
             case 10:
                 Text = "Ryk tre felter tilbage";
-                P.Position = P.Position-3;
+                P.ChangePosition(-3);
                 Game.fields.get(P.Position).Lands(P);
                 break;
             case 11:
-                Text = "Ryk tre felter fReM";
-                P.Position = P.Position+3;
+                Text = "Ryk tre felter frem";
+                P.ChangePosition(3);
                 Game.fields.get(P.Position).Lands(P);
                 break;
             case 12:
