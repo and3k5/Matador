@@ -87,12 +87,9 @@ public class Luckcard {
                 Text = "Ryk frem til Vimmelskaftet. Hvis de passerer 'START', indkasser da kr. 4.000.";
                 if (P.Position>32) {
                     // User has to pass start
+                    Game.fields.get(0).Passed(P);
                 }
                 P.Position=32;
-                
-                /*
-                TODO PASS START GET MONEY
-                */
                 break;
             case 16:
                 Text = "Værdien af egen avl fra nyttehaven udgør kr. 200, som De modtager af banken.";
@@ -104,12 +101,17 @@ public class Luckcard {
                 break;
             case 18:
                 Text = "Tag med den nærmeste færge. Flyt brikken frem, og hvis De passerer 'START', indkasser da kr. 4.000.";
-                int[] shippingLines = new int[]{5,15,25,35};
-                
-                /*
-                TODO MAKE THINGS (Anders)
-                redderri pos 5 15 25 35
-                */
+                if (P.Position>35) {
+                    // User has to pass start
+                    Game.fields.get(0).Passed(P);
+                    P.Position=5;
+                }else if (P.Position>25) {
+                    P.Position=35;
+                }else if (P.Position>15) {
+                    P.Position=25;
+                }else if (P.Position>5) {
+                    P.Position=15;
+                }
                 break;
             case 19:
                 Text = "Kommunen har eftergivet et kvartals skat. Hæv i banken kr. 3.000.";
@@ -125,9 +127,11 @@ public class Luckcard {
                 break;
             case 22:
                 Text = "Ryk frem til Strandvejen. Hvis De passerer 'START', indkasser da kr. 4.000.";
-                /*
-                TODO PASS START GET MONEY
-                */
+                if (P.Position>19) {
+                    // User has to pass start
+                    Game.fields.get(0).Passed(P);
+                }
+                P.Position=19;
                 break;
             case 23:
                 Text = "Tag ind på Rådhuspladsen.";
@@ -161,17 +165,19 @@ public class Luckcard {
                 break;
             case 27:
                 Text = "Ryk frem til Frederiksberg Allé. Hvis De passerer 'START', indkasser da kr. 4.000.";
+                if (P.Position>11) {
+                    // User has to pass start
+                    Game.fields.get(0).Passed(P);
+                }
                 P.Position=11;
-                /*
-                TODO PASS START GET MONEY
-                */
                 break;
             case 28:
                 Text = "Ryk frem til Grønningen. Hvis De passerer 'START', indkasser da kr. 4.000.";
+                if (P.Position>24) {
+                    // User has to pass start
+                    Game.fields.get(0).Passed(P);
+                }
                 P.Position=24;
-                /*
-                TODO PASS GO GET MONEY
-                */
                 break;
             case 29:
                 Text = "De skal holde familiefest og får et tilskud fra hver medspiller på kr. 500.";
@@ -186,10 +192,11 @@ public class Luckcard {
                 break;
             case 30:
                 Text = "Tag med Mols-Linien. Flyt brikken frem, og hvis De passerer 'START', indkasser da kr. 4.000.";
+                if (P.Position>15) {
+                    // User has to pass start
+                    Game.fields.get(0).Passed(P);
+                }
                 P.Position=15;
-                /*
-                TODO PASS START GET MONEY
-                */
                 break;
             case 31:
                 Text = "De har solgt nogle gamle møbler på auktion. Modtag kr. 1.000 af banken.";
@@ -199,11 +206,69 @@ public class Luckcard {
                 Text = "De havde en række med elleve rigtige i tipning. Modtag kr. 1.000.";
                 P.ChangeMoney(1000);
                 break;
-            /* TODO
             case 33:
                 Text = "Ryk brikken frem til det nærmeste rederi og betal ejeren to gange den leje, han ellers er berettiget til. Hvis selskabet ikke ejes af nogen, kan De købe det af banken.";
-                P.ChangeMoney(length);
-                break;*/
+                if (P.Position>35) {
+                    P.Position=5;
+                    SLDouble(P);
+                    Game.fields.get(P.Position).Lands(P);
+                }else if (P.Position>25) {
+                    P.Position=35;
+                    SLDouble(P);
+                    Game.fields.get(P.Position).Lands(P);
+                }else if (P.Position>15) {
+                    P.Position=25;
+                    SLDouble(P);
+                    Game.fields.get(P.Position).Lands(P);
+                }else if (P.Position>5) {
+                    P.Position=15;
+                    SLDouble(P);
+                    Game.fields.get(P.Position).Lands(P);
+                }
+                break;
+        }
+    }
+    private static void SLDouble(Player P)
+    {
+        ShippingLines SL = (ShippingLines)Game.fields.get(P.Position);
+        int Owner = SL.Owner;
+        if (Owner != Game.players.indexOf(P))
+        {
+            if ((Game.players.get(Owner)).InPrison == false)
+            {
+                
+                int cnt = SL.CountShippingLines();
+                Player OPlayer = Game.players.get(Owner);
+                if (cnt == 1)
+                {
+                    int Pay;
+                    Pay = -500;
+                    P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
+                }
+                else if (cnt == 2)
+                {
+                    int Pay;
+                    Pay = -1000;    
+                    P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
+                }
+                else if (cnt == 3)
+                {
+                    int Pay;
+                    Pay = -2000;    
+                    P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
+                }
+                else if (cnt == 4)
+                {
+                    int Pay;
+                    Pay = -4000;
+                    P.ChangeMoney(Pay);
+                    OPlayer.ChangeMoney(-Pay);
+                }
+                
+            }
         }
     }
     
