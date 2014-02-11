@@ -41,7 +41,7 @@ public class Game {
         PlayerNames pnForm = new PlayerNames();
         pnForm.setVisible(true);
     }
-    
+    public static GameBoard gameboard;
     public static void StartGame(ArrayList<String> names) {
         // When player form is done, this function is called
         // Colors for players.
@@ -69,7 +69,10 @@ public class Game {
         }
         // Read XML
         readXML();
-        GameLoop();
+        GameRunning = true;
+        trackDices=false;
+        dicesEqual=0;
+        gameboard=new GameBoard();
     }
     public static int requestBuy(Player theCustomer,Field field) {
         Object[] options = new Object[2];
@@ -99,48 +102,59 @@ public class Game {
             price = -1;
         }
         int choice=JOptionPane.showOptionDialog(null, theCustomer.Name+":\n"+type+" '"+name+"' er til salg for "+price+" kr.\nVil du købe stedet?", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+        if (choice==0) {
+            
+        }
         return choice;
     }
+    
+    public static void GA_ThrowDice() {
+        Player player = players.get(currentPlayer);
+        dices[0].Throw();
+        dices[1].Throw();
+        if (!player.InPrison) {
+            // Player is not in prison
+            if (dices[0].number==dices[1].number) {
+                if (!trackDices) {
+                    trackDices=true;
+                    dicesEqual=0;
+                }
+                dicesEqual++;
+                if (dicesEqual==3) {
+                    new GoToPrison().Lands(player);
+                    trackDices=false;
+                    dicesEqual=0;
+                }else{
+                    // TODO
+                    // still his turn;
+                }
+            }else{
+                trackDices=false;
+                dicesEqual=0;
+            }
+            int diceValue=dices[0].number+dices[1].number;
+            for (int tmpPos=0;tmpPos<diceValue-1;tmpPos++) {
+                fields.get(player.ChangePosition(1)).Passed(player);
+            }
+            fields.get(player.ChangePosition(1)).Lands(player);
+        }else{
+            // Player is in prison
+            fields.get(player.Position).Lands(player);
+        }
+    }
+    private static boolean GameRunning;
+    private static boolean trackDices;
+    public static int dicesEqual;
+    
     private static void GameLoop() {
         // The game loop
-        boolean GameRunning = true;
-        boolean trackDices = false;
-        int dicesEqual = 0;
+        
+        
         while (GameRunning) {
             for (int i=0;i<players.size();i++) { 
                 currentPlayer = i;
-                Player player = players.get(currentPlayer);
-                dices[0].Throw();
-                dices[1].Throw();
-                if (!player.InPrison) {
-                    // Player is not in prison
-                    if (dices[0].number==dices[1].number) {
-                        if (!trackDices) {
-                            trackDices=true;
-                            dicesEqual=0;
-                        }
-                        dicesEqual++;
-                        if (dicesEqual==3) {
-                            new GoToPrison().Lands(player);
-                            trackDices=false;
-                            dicesEqual=0;
-                        }else{
-                            i--;
-                        }
-                    }else{
-                        trackDices=false;
-                        dicesEqual=0;
-                    }
-                    int diceValue=dices[0].number+dices[1].number;
-                    for (int tmpPos=0;tmpPos<diceValue-1;tmpPos++) {
-                        player.Position++;
-                        fields.get(player.Position).Passed(player);
-                    }
-                    fields.get(++player.Position).Lands(player);
-                }else{
-                    // Player is in prison
-                    fields.get(player.Position).Lands(player);
-                }
+                
+                
             }
         }
     }
