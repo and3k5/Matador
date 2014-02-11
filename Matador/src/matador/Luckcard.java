@@ -21,7 +21,6 @@ public class Luckcard {
         String Text;
         int length = Luckcards.length;
         int randomcard;
-        int OtherP;
         randomcard = new Random().nextInt(length-1); //(int) (length * Math.random());
         switch (Luckcards[randomcard]){
             case 1:
@@ -130,20 +129,25 @@ public class Luckcard {
                 break;
             case 24:
                 Text = "Det er Deres fødselsdag. Modtag af hver medspiller kr. 200.";
-                
-                for()
+                for (Player OtherP: Game.players)
                 {
-                    
+                    if (Game.players.indexOf(OtherP) != Game.players.indexOf(P))
+                    {
+                        OtherP.ChangeMoney(-200);
+                        P.ChangeMoney(200);
+                    }
                 }
-                /*
-                TODO GET MONEY OTHER PLAYERS
-                */
                 break;
             case 25:
                 Text = "De har lagt penge ud til et sammenskudsgilde. Mærkværdigvis betaler alle straks. Modtag fra hver medspiller kr. 500.";
-                /*
-                TODO GET MONEY OTHER PLAYERS
-                */
+                for (Player OtherP: Game.players)
+                {
+                    if (Game.players.indexOf(OtherP) != Game.players.indexOf(P))
+                    {
+                        OtherP.ChangeMoney(-500);
+                        P.ChangeMoney(500);
+                    }
+                }
                 break;
             case 26:
                 Text = "De har kørt frem for 'Fuldt stop'. Betal kr. 1.000 i bøde.";
@@ -165,15 +169,20 @@ public class Luckcard {
                 break;
             case 29:
                 Text = "De skal holde familiefest og får et tilskud fra hver medspiller på kr. 500.";
-                /*
-                TODO GET MONEY OTHER PLAYERS
-                */
+                for (Player OtherP: Game.players)
+                {
+                    if (Game.players.indexOf(OtherP) != Game.players.indexOf(P))
+                    {
+                        OtherP.ChangeMoney(-500);
+                        P.ChangeMoney(500);
+                    }
+                }
                 break;
             case 30:
                 Text = "Tag med Mols-Linien. Flyt brikken frem, og hvis De passerer 'START', indkasser da kr. 4.000.";
                 P.Position=15;
                 /*
-                TODO PASS GO GET MONEY
+                TODO PASS START GET MONEY
                 */
                 break;
             case 31:
