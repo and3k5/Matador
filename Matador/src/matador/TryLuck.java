@@ -5,6 +5,8 @@
  */
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -15,5 +17,8 @@ public class TryLuck extends Field {
     public void Lands(Player P)
     {
         Luckcard.TryCard(P);
+        Object[] options = new Object[1];
+        options[0] = "Dit held";
+        JOptionPane.showOptionDialog(null, Luckcard.Text, "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
     }
 }
