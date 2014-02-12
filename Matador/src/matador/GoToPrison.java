@@ -6,6 +6,8 @@
 
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -13,6 +15,7 @@ package matador;
 public class GoToPrison extends Field{
     @Override
     public void Lands(Player P){
+      JOptionPane.showMessageDialog(null, "Du er nu kommet i fængsel.");
       P.Position = 10;
       P.InPrison = true;
     }

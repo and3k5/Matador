@@ -23,7 +23,7 @@ public class Player {
     public int Position;
     public boolean InPrison;
     public int GetOutCard;
-    
+    public int PrisonTurns;
     public Player()
     {
         /*
@@ -36,6 +36,7 @@ public class Player {
         Position = 0;
         InPrison = false;
         GetOutCard = 0;
+        PrisonTurns=0;
     }
     
     public int GetMoney()

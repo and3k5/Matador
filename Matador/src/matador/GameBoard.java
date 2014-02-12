@@ -6,7 +6,9 @@
 
 package matador;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
@@ -20,6 +22,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -56,7 +60,16 @@ public class GameBoard extends javax.swing.JFrame {
         throwDiceBtn.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                System.out.println("Button dice clicked");
+                int diceCnt=Game.dicesEqual;
+                int playerid=Game.currentPlayer;
                 Game.GA_ThrowDice(); //To change body of generated methods, choose Tools | Templates.
+                if ((diceCnt==Game.dicesEqual)&&(playerid==Game.currentPlayer)) {
+                    //(JButton)e.getSource()
+                    showNextPlayerBtn=true;
+                    showThrowDiceBtn=false;
+                    refreshGameControl();
+                }
             }
             
             @Override
@@ -78,9 +91,42 @@ public class GameBoard extends javax.swing.JFrame {
         JButton mortgageBtn = new JButton();
         mortgageBtn.setText("Pantsæt");
         mortgageBtn.addMouseListener(new MouseListener() {
+            private Frame frame;
+            public MouseListener getVars(Frame frm) {
+                frame = frm;
+                return this;
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
-                
+                System.out.println("Button mortage clicked");
+                MortgageDialog mortgageDialog = new MortgageDialog(frame, true, Game.currentPlayer);
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        }.getVars(this));
+        JButton nextPlayerBtn = new JButton();
+        nextPlayerBtn.setText("Næste spiller");
+        nextPlayerBtn.setVisible(false);
+        nextPlayerBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Button next player clicked");
+                Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                clearGameControl();
             }
             
             @Override
@@ -99,9 +145,107 @@ public class GameBoard extends javax.swing.JFrame {
             public void mouseExited(MouseEvent e) {
             }
         });
-        
+        JButton jailThrowDiceBtn = new JButton();
+        jailThrowDiceBtn.setText("Kast terningerne");
+        jailThrowDiceBtn.setVisible(false);
+        jailThrowDiceBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Button (jail) throw dice clicked");
+                Game.GA_JailThrowDice();
+                if (Game.players.get(Game.currentPlayer).InPrison) {
+                    // If player still is in prison after throw dice
+                    if (Game.JailDiceTries<3) {
+                        // If this isn't the third try
+                        showJailPayBailBtn=false;
+                    }else{
+                        // If this is the last try
+                        if (Game.players.get(Game.currentPlayer).PrisonTurns>2) {
+                            // If this is the third round the player is in prison
+                            showJailThrowDiceBtn=false;
+                            showJailPayBailBtn=true;
+                            showNextPlayerBtn=false;
+                        }else{
+                            // If this is not the third round the player is in prison
+                            showJailThrowDiceBtn=false;
+                            showJailPayBailBtn=false;
+                            showNextPlayerBtn=true;
+                        }
+                    }
+                    refreshGameControl();
+                }
+                //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                clearGameControl();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        JButton jailPayBailBtn = new JButton();
+        jailPayBailBtn.setText("Kast terningerne");
+        jailPayBailBtn.setVisible(false);
+        jailPayBailBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Button (jail) pay bail clicked");
+                Game.players.get(Game.currentPlayer).ChangeMoney(-1000);
+                Game.players.get(Game.currentPlayer).InPrison=false;
+                Game.players.get(Game.currentPlayer).PrisonTurns=0;
+                if (Game.JailDiceTries==0) {
+                    // Next player (before dice thrown)
+                    showThrowDiceBtn=false;
+                    showJailThrowDiceBtn=false;
+                    showNextPlayerBtn=true;
+                    showJailPayBailBtn=false;
+                }else{
+                    // player forced to move
+                    showThrowDiceBtn=false;
+                    showMortgageBtn=false;
+                    showJailThrowDiceBtn=false;
+                    showNextPlayerBtn=true;
+                    showJailPayBailBtn=false;
+                    Game.players.get(Game.currentPlayer).ChangePosition(Game.dices[0].number+Game.dices[1].number);
+                }
+                refreshGameControl();
+                
+                //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                //clearGameControl();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
         choices.add(throwDiceBtn);
         choices.add(mortgageBtn);
+        choices.add(nextPlayerBtn);
+        choices.add(jailThrowDiceBtn);
+        choices.add(jailPayBailBtn);
     }
     public void closing(JFrame frame) {
         if (JOptionPane.showConfirmDialog(null, "Dette vil afslutte Matador. Er du sikker på at du vil lukke?", "Er du sikker?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)==JOptionPane.YES_OPTION) {
@@ -111,56 +255,114 @@ public class GameBoard extends javax.swing.JFrame {
         }
     }
     ArrayList<JButton> choices = new ArrayList<>();
+    public boolean showThrowDiceBtn=false;
+    public boolean showMortgageBtn=false;
+    public boolean showNextPlayerBtn=false;
+    public boolean showJailThrowDiceBtn=false;
+    public boolean showJailPayBailBtn=false;
     public void initGame() {
         System.out.println("initGame");
         Game.currentPlayer=0;
-        getPlayOptions();
+        clearGameControl();
     }
-    public void getPlayOptions() {
-        System.out.println("getPlayOptions");
-        Boolean mortgageOption = false;
+    public void clearGameControl() {
+        System.out.println("Player's turn: ["+Game.currentPlayer+"] "+Game.players.get(Game.currentPlayer));
+        showThrowDiceBtn=false;
+        showMortgageBtn=false;
+        showNextPlayerBtn=false;
+        showJailThrowDiceBtn=false;
+        showJailPayBailBtn=false;
         int player=Game.currentPlayer;
         for (Field field : Game.fields) {
             if (field.getClass()==Brewery.class) {
                 Brewery brew = ((Brewery)field);
                 if (brew.Owner==player) {
-                    mortgageOption=true;
+                    showMortgageBtn=true;
                 }
             }else if (field.getClass()==Street.class) {
                 Street street = ((Street)field);
                 if (street.Owner==player) {
-                    mortgageOption=true;
+                    showMortgageBtn=true;
                 }
             }else if (field.getClass()==ShippingLines.class) {
                 ShippingLines sl = ((ShippingLines)field);
                 if (sl.Owner==player) {
-                    mortgageOption=true;
+                    showMortgageBtn=true;
                 }
             }
         }
         
-        Boolean throwDiceOption=!Game.players.get(player).InPrison;
-        
-        
-        
-        
+        if (!Game.players.get(player).InPrison) {
+            showThrowDiceBtn=true;
+        }else{
+            showJailThrowDiceBtn=true;
+        }
+        refreshGameControl();
+    }
+    public void refreshGameControl() {
         // mortgageOption
+        
         gamecontrol.optionPanel.removeAll();
         int y=0;
-        if (throwDiceOption) {
+        if (showThrowDiceBtn) {
             JButton copy = choices.get(0);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y+=copy.getHeight());
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("May throw dice");
+            System.out.println("Inserted dice button");
         }
-        if (mortgageOption) {
+        if (showJailThrowDiceBtn) {
+            JButton copy = choices.get(3);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
+            copy.setVisible(false);
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("Inserted jail dice button");
+        }
+        if (showJailPayBailBtn) {
+            JButton copy = choices.get(4);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
+            copy.setVisible(false);
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("Inserted jail pay bail button");
+        }
+        if (showMortgageBtn) {
             JButton copy = choices.get(1);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y+=copy.getHeight());
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("May mortgage");
+            System.out.println("Inserted mortage button");
         }
+        if (true) {
+            JButton copy = choices.get(2);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
+            if (!showNextPlayerBtn) {
+                copy.setVisible(false);
+            }else{
+                copy.setVisible(true);
+            }
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("Inserted next player button");
+        }
+        DefaultTableModel model = (DefaultTableModel)gamecontrol.jTable1.getModel();
+        int count=0;
+        while (model.getRowCount()>0) {
+            model.removeRow(0);
+            
+            count++;
+        }
+        if (count>0) model.fireTableRowsInserted(0,count-1);
+        for (Player player : Game.players) {
+            model.addRow(new Object[]{player.Name,player.GetMoney()});
+        }
+        model.fireTableRowsInserted(0,Game.players.size());
         gamecontrol.optionPanel.updateUI();
         
     }

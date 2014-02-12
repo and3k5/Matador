@@ -11,14 +11,22 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 /**
@@ -45,6 +53,12 @@ public class MapBoard extends javax.swing.JPanel {
                 mouse=e.getPoint();
             }
         });
+        try {
+            diceimg=ImageIO.read(new File("images/DICE.png"));
+        } catch (IOException ex) {
+            System.out.println("Could not find image...");
+            Logger.getLogger(MapBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 
@@ -62,6 +76,7 @@ public class MapBoard extends javax.swing.JPanel {
     public double easeNone (double t,double b , double c, double d) {
             return c*t/d + b;
     }
+    private BufferedImage diceimg;
     private void drawCircle(Graphics graphics) {
         try {
         Graphics2D g2d = (Graphics2D)graphics;
@@ -208,6 +223,13 @@ public class MapBoard extends javax.swing.JPanel {
             
             i++;
         }
+        //Rectangle clip = new Rectangle(256*(Game.dices[0].number-1), 0, 256, 256);
+        //diceimg
+        //g2d.setClip(clip);
+        int diceSize=64;
+        //System.out.println(256*(Game.dices[0].number-1));
+        g2d.drawImage(diceimg.getSubimage(256*(Game.dices[0].number-1), 0, 256, 256),this.getWidth()-diceSize*2, this.getHeight()-diceSize, diceSize, diceSize, this);
+        g2d.drawImage(diceimg.getSubimage(256*(Game.dices[1].number-1), 0, 256, 256),this.getWidth()-diceSize, this.getHeight()-diceSize, diceSize, diceSize, this);
         }
         catch (NullPointerException error) {
             // Stupid netbeans form designer..

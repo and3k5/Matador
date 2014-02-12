@@ -15,7 +15,7 @@ public class Dice {
     public int number;
     
     public Dice() {
-        this.number = 0;
+        this.number = 1;
     }
     public void Throw() {
         this.number=(int)(1+Math.random()*6);

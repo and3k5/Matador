@@ -16,20 +16,21 @@ public class Prison extends Field{
     @Override
     public void Lands(Player P)
     {
-        if(P.InPrison == true)
-        {
-            Prisoner(P);
-        }
+        
     }
     private void Prisoner(Player P)
     {
-        Object[] options = new Object[3];
+        Object[] options = new Object[2];
         options[0] = "Kast med Terningerne";
         options[1] = "Betal 1000";
         int GetOutCard = 0;
         if (GetOutCard > 0)
         {
-            options[2] = "Brug lykke kort";
+            Object[] tmp = new Object[3];
+            tmp[0]=options[0];
+            tmp[1]=options[1];
+            tmp[2] = "Brug lykke kort";
+            options=tmp;
         }
         int OBP = JOptionPane.showOptionDialog(null, "Tryk på en knap", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
         if (OBP == 0)

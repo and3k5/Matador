@@ -132,7 +132,26 @@ public class Game {
         }
         return choice;
     }
-    
+    public static int JailDiceTries=0;
+    public static void GA_JailThrowDice() {
+        if (JailDiceTries<3) {
+            Player player = players.get(currentPlayer);
+            dices[0].Throw();
+            dices[1].Throw();
+            if (dices[0].number == dices[1].number)
+            {
+                player.InPrison = false;
+                player.PrisonTurns=0;
+                player.ChangePosition((dices[0].number + dices[1].number));
+                Game.fields.get(player.Position).Lands(player);
+            }else{
+                JailDiceTries++;
+            }
+        }else{
+            //JailDiceTries=0;
+            //currentPlayer=(currentPlayer+1)%players.size();
+        }
+    }
     public static void GA_ThrowDice() {
         Player player = players.get(currentPlayer);
         dices[0].Throw();
@@ -149,11 +168,19 @@ public class Game {
                     new GoToPrison().Lands(player);
                     trackDices=false;
                     dicesEqual=0;
+                    currentPlayer=(currentPlayer+1)%players.size();
+                    
+                    gameboard.clearGameControl();
                 }else{
                     // TODO
                     // still his turn;
+                    
                 }
             }else{
+                if (trackDices) {
+                    currentPlayer=(currentPlayer+1)%players.size();
+                    
+                }
                 trackDices=false;
                 dicesEqual=0;
             }
