@@ -6,17 +6,17 @@
 
 package matador;
 
-import com.sun.awt.AWTUtilities;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
@@ -40,15 +40,68 @@ public class GameBoard extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(width/2), (screenSize.height/2)-(this.getHeight()/2));
         updatePosition();
+        
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
 
             @Override
             public void run() {
                 mapBoard1.updateUI();
+                updatePosition();
             }
             
         },100,10);
+        JButton throwDiceBtn = new JButton();
+        throwDiceBtn.setText("Kast terningerne");
+        throwDiceBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Game.GA_ThrowDice(); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        JButton mortgageBtn = new JButton();
+        mortgageBtn.setText("Pantsæt");
+        mortgageBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        
+        choices.add(throwDiceBtn);
+        choices.add(mortgageBtn);
     }
     public void closing(JFrame frame) {
         if (JOptionPane.showConfirmDialog(null, "Dette vil afslutte Matador. Er du sikker på at du vil lukke?", "Er du sikker?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)==JOptionPane.YES_OPTION) {
@@ -57,58 +110,60 @@ public class GameBoard extends javax.swing.JFrame {
             frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         }
     }
-    public void setHoverField(int fid) {
-        Field field = Game.fields.get(fid);
-        String description = "<html>";
-        ArrayList<Class<?>> classes = new ArrayList(Arrays.asList(new Object[]{Brewery.class,GoToPrison.class,IncomeTax.class,Parking.class,Prison.class,ShippingLines.class,Start.class,StateTax.class,Street.class,TryLuck.class}));
-        // Brewery.class
-        // GoToPrison.class
-        // IncomeTax.class
-        // Parking.class
-        // Prison.class
-        // ShippingLines.class
-        // Start.class
-        // StateTax.class
-        // Street.class
-        // TryLuck.class
-        switch (classes.indexOf(field.getClass())) {
-            case 0:
-                // Brewery
-                Brewery f = (Brewery)field;
-                description+="Bryggeriet "+f.Name+"<br/>";
-                if (f.Owner!=-1) {
-                    description+="Ejes af "+Game.players.get(f.Owner).Name+"<br/>";
-                }else{
-                    description+="Ejes ikke | Til salg<br/>";
-                }
-                
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
-            case 9:
-                break;
-            case 10:
-                break;
-            
-        }
-        description+="</html>";
-        //jLabel2.setText(description);
+    ArrayList<JButton> choices = new ArrayList<>();
+    public void initGame() {
+        System.out.println("initGame");
+        Game.currentPlayer=0;
+        getPlayOptions();
     }
-    
+    public void getPlayOptions() {
+        System.out.println("getPlayOptions");
+        Boolean mortgageOption = false;
+        int player=Game.currentPlayer;
+        for (Field field : Game.fields) {
+            if (field.getClass()==Brewery.class) {
+                Brewery brew = ((Brewery)field);
+                if (brew.Owner==player) {
+                    mortgageOption=true;
+                }
+            }else if (field.getClass()==Street.class) {
+                Street street = ((Street)field);
+                if (street.Owner==player) {
+                    mortgageOption=true;
+                }
+            }else if (field.getClass()==ShippingLines.class) {
+                ShippingLines sl = ((ShippingLines)field);
+                if (sl.Owner==player) {
+                    mortgageOption=true;
+                }
+            }
+        }
+        
+        Boolean throwDiceOption=!Game.players.get(player).InPrison;
+        
+        
+        
+        
+        // mortgageOption
+        gamecontrol.optionPanel.removeAll();
+        int y=0;
+        if (throwDiceOption) {
+            JButton copy = choices.get(0);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y+=copy.getHeight());
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("May throw dice");
+        }
+        if (mortgageOption) {
+            JButton copy = choices.get(1);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y+=copy.getHeight());
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("May mortgage");
+        }
+        gamecontrol.optionPanel.updateUI();
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -121,11 +176,18 @@ public class GameBoard extends javax.swing.JFrame {
         mapBoard1 = new matador.MapBoard();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Matador");
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
         setPreferredSize(new java.awt.Dimension(600, 600));
         setResizable(false);
-        setType(java.awt.Window.Type.UTILITY);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -146,6 +208,11 @@ public class GameBoard extends javax.swing.JFrame {
                 formAncestorResized(evt);
             }
         });
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
+            }
+        });
 
         mapBoard1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -153,12 +220,14 @@ public class GameBoard extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mapBoard1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+            .addComponent(mapBoard1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mapBoard1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+            .addComponent(mapBoard1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
         );
+
+        mapBoard1.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -180,17 +249,39 @@ public class GameBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_formAncestorResized
     public void updatePosition() {
         gamecontrol.setLocation(this.getX()+this.getWidth()+8, this.getY());
+        
     }
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
         // TODO add your handling code here:
         updatePosition();
-        
     }//GEN-LAST:event_formComponentMoved
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         closing(this);
     }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        // TODO add your handling code here:
+        updatePosition();
+        gamecontrol.toFront();
+        gamecontrol.setFocusableWindowState(false);
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
+        // TODO add your handling code here:
+        switch (this.getState()) {
+            case 0:
+                gamecontrol.setState(NORMAL);
+                break;
+            case 1:
+                gamecontrol.setState(ICONIFIED);
+                break;
+            default:
+                break;
+        }
+        
+    }//GEN-LAST:event_formWindowStateChanged
 
     /**
      * @param args the command line arguments

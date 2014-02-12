@@ -17,9 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import javax.swing.JFrame;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.SwingUtilities;
-import sun.awt.SunToolkit;
 
 /**
  *
@@ -45,6 +45,7 @@ public class MapBoard extends javax.swing.JPanel {
                 mouse=e.getPoint();
             }
         });
+        
     }
 
     private void rotateBy(int degrees,Graphics2D g2d) {
@@ -58,7 +59,9 @@ public class MapBoard extends javax.swing.JPanel {
         g2d.transform(transform);
     }
     private Point mouse;
-    
+    public double easeNone (double t,double b , double c, double d) {
+            return c*t/d + b;
+    }
     private void drawCircle(Graphics graphics) {
         try {
         Graphics2D g2d = (Graphics2D)graphics;
@@ -123,7 +126,7 @@ public class MapBoard extends javax.swing.JPanel {
             }
             
             if (fillPath.contains(mouse)) {
-                ((GameBoard)SwingUtilities.getWindowAncestor(this)).setHoverField(fieldN);
+                setHoverField(fieldN,g2d);
                 g2d.setColor(new Color(0, 0, 0, 128));
                 g2d.fill(fillPath);
                 g2d.setColor(new Color(0,0,0));
@@ -145,6 +148,34 @@ public class MapBoard extends javax.swing.JPanel {
             }else if (field.getClass()==Start.class) {
                 String cap = "Start";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==Brewery.class) {
+                Brewery brewery=((Brewery)field);
+                int x=(int) (circleSize-g2d.getFontMetrics().stringWidth(brewery.Name)-circleLineWidth*2);
+                int y=circleSize/2;
+                g2d.drawString(brewery.Name,x,y);
+            }else if (field.getClass()==GoToPrison.class) {
+                String cap="Gå til fængsel";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==IncomeTax.class) {
+                String cap="Betal inkomst skat";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==Parking.class) {
+                String cap="Parkering";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==Prison.class) {
+                String cap="Fængsel";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==ShippingLines.class) {
+                ShippingLines shiplines=((ShippingLines)field);
+                int x=(int) (circleSize-g2d.getFontMetrics().stringWidth(shiplines.Name)-circleLineWidth*2);
+                int y=circleSize/2;
+                g2d.drawString(shiplines.Name,x,y);
+            }else if (field.getClass()==StateTax.class) {
+                String cap="Ekstra statsskat";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+            }else if (field.getClass()==TryLuck.class) {
+                String cap="Prøv lykken";
+                g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
             }
             fieldN++;
             rotateBy(-textRotation,g2d);
@@ -154,12 +185,142 @@ public class MapBoard extends javax.swing.JPanel {
         }
         g2d.drawArc(circle0_x, circle0_y, circle0_w, circle0_h, 0, 360);
         g2d.drawArc(circle1_x, circle1_y, circle1_w, circle1_h, 0, 360);
+        int i=1;
+        int dotSize=30;
+        for (Player player : Game.players) {
+            int x_1=0;
+            int y_1=0;
+            int x_2=0;
+            int y_2=0;
+            int x=0;
+            int y=0;
+            x_1=(int) (circleSize/2+Math.cos((player.Position*degWidth+degWidth/2)*Math.PI/180)*iW);
+            y_1=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*iW);
+            x_2=(int) (circleSize/2+Math.cos((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oW);
+            y_2=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oH);
+            x=(int)easeNone(i,x_1,x_2-x_1,Game.players.size());
+            y=(int)easeNone(i,y_1,y_2-y_1,Game.players.size());
+            g2d.setColor(player.Color);
+            g2d.fillArc(x-dotSize/2, y-dotSize/2, dotSize, dotSize, 0, 360);
+            g2d.setColor(new Color(0,0,0));
+
+            
+            
+            i++;
+        }
         }
         catch (NullPointerException error) {
             // Stupid netbeans form designer..
         }
     }
-    
+    public void setHoverField(int fid,Graphics2D g2d) {
+        Field field = Game.fields.get(fid);
+        String description = "Felt:\n";
+        ArrayList<Class<?>> classes = new ArrayList(Arrays.asList(new Object[]{Brewery.class,GoToPrison.class,IncomeTax.class,Parking.class,Prison.class,ShippingLines.class,Start.class,StateTax.class,Street.class,TryLuck.class}));
+        // Brewery.class
+        // GoToPrison.class
+        // IncomeTax.class
+        // Parking.class
+        // Prison.class
+        // ShippingLines.class
+        // Start.class
+        // StateTax.class
+        // Street.class
+        // TryLuck.class
+        switch (classes.indexOf(field.getClass())) {
+            case 0:
+                // Brewery
+                Brewery brew = (Brewery)field;
+                description+="Bryggeri:\n"+brew.Name+"\n";
+                if (brew.Owner!=-1) {
+                    description+="Ejes af "+Game.players.get(brew.Owner).Name+"\n";
+                    if (!brew.Mortgage) {
+                        description+="Leje: Terningens øjne * "+(brew.CountBrewery()*100)+" kr.\n";
+                    }else{
+                        description+="Pantsat.\n";
+                    }
+                }else{
+                    description+="Ejes ikke\n";
+                }
+                description+="Pris værdi:"+brew.Price+" kr.";
+                
+                break;
+            case 1:
+                // GoToPrison
+                description+="Gå til fængsel.\nBrik rykkes til fængslet.";
+                break;
+            case 2:
+                // incomeTax
+                description+="Inkomst skat.\nBetal 10% eller 4000 kr.";
+                break;
+            case 3:
+                // Parking
+                description+="Parkering.\nGiver 4000 kr.";
+                break;
+            case 4:
+                // Prison
+                description+="Fængsel.";
+                break;
+            case 5:
+                // ShippingLines
+                ShippingLines sl = (ShippingLines)field;
+                description+="Redderi:\n";
+                if (sl.Owner!=-1) {
+                    description+="Ejes af "+Game.players.get(sl.Owner).Name+"\n";
+                    if (!sl.Mortgage) {
+                        description+="Leje: "+(int)((new double[]{0,500,1000,2000,4000})[(sl.CountShippingLines())])+" kr.\n";
+                    }else{
+                        description+="Pantsat.\n";
+                    }
+                }else{
+                    description+="Ejes ikke\n";
+                }
+                description+="Pris værdi:"+sl.Price+" kr.";
+                break;
+            case 6:
+                // Start
+                description+="Start felt";
+                break;
+            case 7:
+                // Statetax
+                description+="Ekstra ordinær statsskat.\nBetal 2000 kr.";
+                break;
+            case 8:
+                // Street
+                Street street = (Street)field;
+                description+="Redderi:\n";
+                if (street.Owner!=-1) {
+                    description+="Ejes af "+Game.players.get(street.Owner).Name+"\n";
+                    if (!street.Mortgage) {
+                        description+="Leje: "+street.Taxes[street.Houses]+" kr.\n";
+                    }else{
+                        description+="Pantsat.\n";
+                    }
+                }else{
+                    description+="Ejes ikke\n";
+                }
+                description+="Pris værdi:"+street.Price+" kr.";
+                break;
+            case 9:
+                // Tryluck
+                description+="Prøv lykken";
+                break;
+            default:
+                description="WAT";
+                break;
+            
+        }
+        //description+="";
+        
+        drawMultilineString(description,g2d, (this.getWidth()/2), this.getHeight()/2);
+        //g2d.drawString(description, (this.getWidth()/2)-g2d.getFontMetrics().stringWidth(description)/2, this.getHeight()/3);
+        //jLabel2.setText(description);
+    }
+    private void drawMultilineString(String str,Graphics2D g2d,int x, int y) {
+        for (String line : str.split("\n")) {
+            g2d.drawString(line, x-g2d.getFontMetrics().stringWidth(line)/2, (y+=g2d.getFontMetrics().getHeight())-g2d.getFontMetrics().getHeight()*str.split("\n").length/2);
+        }
+    }
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);

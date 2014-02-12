@@ -25,7 +25,7 @@ public class Brewery extends Field {
     }
     
     
-    private int CountBrewery()
+    public int CountBrewery()
     {
         int CountBrew = 0;
         for (Field F: Game.fields )

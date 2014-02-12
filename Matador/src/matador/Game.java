@@ -15,9 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
@@ -73,6 +70,7 @@ public class Game {
         trackDices=false;
         dicesEqual=0;
         gameboard=new GameBoard();
+        gameboard.initGame();
     }
     public static int requestBuy(Player theCustomer,Field field) {
         Object[] options = new Object[2];
@@ -81,29 +79,56 @@ public class Game {
         String name="";
         String type="";
         int price=0;
+        int ftype=-1;
+        Brewery b = null;
+        ShippingLines sh = null;
+        Street st = null;
         if (field.getClass()==Brewery.class) {
-            Brewery b = (Brewery)field;
+            b = (Brewery)field;
             name=b.Name;
+            ftype=0;
             type="Bryggeriet";
             price = b.Price;
         }else if(field.getClass()==ShippingLines.class) {
-            ShippingLines b = (ShippingLines)field;
-            name=b.Name+" ("+b.SubName+")";
+            sh = (ShippingLines)field;
+            name=sh.Name+" ("+sh.SubName+")";
             type="Redderiet";
-            price = b.Price;
+            ftype=1;
+            price = sh.Price;
         }else if(field.getClass()==Street.class) {
-            Street b = (Street)field;
-            name=b.Name;
+            st = (Street)field;
+            name=st.Name;
             type="Gaden";
-            price = b.Price;
+            ftype=2;
+            price = st.Price;
         }else{
             name ="fejl";
             type = "fejl";
             price = -1;
         }
-        int choice=JOptionPane.showOptionDialog(null, theCustomer.Name+":\n"+type+" '"+name+"' er til salg for "+price+" kr.\nVil du købe stedet?", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+        int choice=-1;
+        if (theCustomer.GetMoney()>price) {
+            choice=JOptionPane.showOptionDialog(null, theCustomer.Name+":\n"+type+" '"+name+"' er til salg for "+price+" kr.\nVil du købe stedet?", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+        }
         if (choice==0) {
-            
+            // User wants to buy
+            switch (ftype) {
+                case 0:
+                    // brewery
+                    b.Owner = Game.players.indexOf(theCustomer);
+                    theCustomer.ChangeMoney(-price);
+                    break;
+                case 1:
+                    // ShippingLines
+                    sh.Owner = Game.players.indexOf(theCustomer);
+                    theCustomer.ChangeMoney(-price);
+                    break;
+                case 2:
+                    // Street
+                    st.Owner = Game.players.indexOf(theCustomer);
+                    theCustomer.ChangeMoney(-price);
+                    break;
+            }
         }
         return choice;
     }
