@@ -6,6 +6,8 @@
 
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -61,27 +63,31 @@ public class ShippingLines extends Field {
                 Player OPlayer = Game.players.get(Owner);
                 if (cnt == 1)
                 {
-                    Pay = -500;
-                    P.ChangeMoney(Pay);
-                    OPlayer.ChangeMoney(-Pay);
+                    Pay = 500;
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 else if (cnt == 2)
                 {
-                    Pay = -1000;    
-                    P.ChangeMoney(Pay);
-                    OPlayer.ChangeMoney(-Pay);
+                    Pay = 1000;    
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 else if (cnt == 3)
                 {
-                    Pay = -2000;    
-                    P.ChangeMoney(Pay);
-                    OPlayer.ChangeMoney(-Pay);
+                    Pay = 2000;    
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 else if (cnt == 4)
                 {
-                    Pay = -4000;
-                    P.ChangeMoney(Pay);
-                    OPlayer.ChangeMoney(-Pay);
+                    Pay = 4000;
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                    P.ChangeMoney(-Pay);
+                    OPlayer.ChangeMoney(Pay);
                 }
                 
             }

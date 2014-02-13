@@ -24,6 +24,7 @@ public class Player {
     public boolean InPrison;
     public int GetOutCard;
     public int PrisonTurns;
+    
     public Player()
     {
         /*
