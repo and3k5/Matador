@@ -6,24 +6,20 @@
 
 package matador;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -57,12 +53,13 @@ public class GameBoard extends javax.swing.JFrame {
         },100,10);
         JButton throwDiceBtn = new JButton();
         throwDiceBtn.setText("Kast terningerne");
-        throwDiceBtn.addMouseListener(new MouseListener() {
+        throwDiceBtn.addActionListener(new ActionListener() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button dice clicked");
-                int diceCnt=Game.dicesEqual;
-                int playerid=Game.currentPlayer;
+                //int diceCnt=Game.dicesEqual;
+                //int playerid=Game.currentPlayer;
                 Game.GA_ThrowDice(); //To change body of generated methods, choose Tools | Templates.
                 /*if ((diceCnt==Game.dicesEqual)&&(playerid==Game.currentPlayer)) {
                     //(JButton)e.getSource()
@@ -71,86 +68,40 @@ public class GameBoard extends javax.swing.JFrame {
                     refreshGameControl();
                 }*/
             }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
         });
         JButton mortgageBtn = new JButton();
         mortgageBtn.setText("Pantsæt");
-        mortgageBtn.addMouseListener(new MouseListener() {
+        mortgageBtn.addActionListener(new ActionListener() {
             private Frame frame;
-            public MouseListener getVars(Frame frm) {
+            public ActionListener getVars(Frame frm) {
                 frame = frm;
                 return this;
             }
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button mortage clicked");
                 MortgageDialog mortgageDialog = new MortgageDialog(frame, true, Game.currentPlayer);
-            }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         }.getVars(this));
         JButton nextPlayerBtn = new JButton();
         nextPlayerBtn.setText("Næste spiller");
         nextPlayerBtn.setVisible(false);
-        nextPlayerBtn.addMouseListener(new MouseListener() {
+        nextPlayerBtn.addActionListener(new ActionListener() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button next player clicked");
                 Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 clearGameControl();
-            }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         });
         JButton jailThrowDiceBtn = new JButton();
         jailThrowDiceBtn.setText("Kast terningerne for 2 ens");
         jailThrowDiceBtn.setVisible(false);
-        jailThrowDiceBtn.addMouseListener(new MouseListener() {
+        jailThrowDiceBtn.addActionListener(new ActionListener() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button (jail) throw dice clicked");
                 Game.GA_JailThrowDice();
                 if (Game.players.get(Game.currentPlayer).InPrison) {
@@ -177,29 +128,14 @@ public class GameBoard extends javax.swing.JFrame {
                 //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 clearGameControl();
             }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
         });
         JButton jailPayBailBtn = new JButton();
         jailPayBailBtn.setText("Betal kaution (1000 kr.)");
         jailPayBailBtn.setVisible(false);
-        jailPayBailBtn.addMouseListener(new MouseListener() {
+        jailPayBailBtn.addActionListener(new ActionListener() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button (jail) pay bail clicked");
                 Game.players.get(Game.currentPlayer).ChangeMoney(-1000);
                 Game.players.get(Game.currentPlayer).InPrison=false;
@@ -224,29 +160,14 @@ public class GameBoard extends javax.swing.JFrame {
                 //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 //clearGameControl();
             }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
         });
         JButton jailFreeCardBtn = new JButton();
         jailFreeCardBtn.setText("Brug fængselsfripas");
         jailFreeCardBtn.setVisible(false);
-        jailFreeCardBtn.addMouseListener(new MouseListener() {
+        jailFreeCardBtn.addActionListener(new ActionListener() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("Button jail freepass clicked");
                 Game.players.get(Game.currentPlayer).GetOutCard--;
                 Game.players.get(Game.currentPlayer).InPrison=false;
@@ -255,22 +176,6 @@ public class GameBoard extends javax.swing.JFrame {
                 
                 //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 //clearGameControl();
-            }
-            
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         });
         choices.add(throwDiceBtn);
@@ -327,10 +232,10 @@ public class GameBoard extends javax.swing.JFrame {
             }
         }
         
-        if (!Game.players.get(player).InPrison) {
-            showThrowDiceBtn=true;
-        }else{
+        if (Game.players.get(player).InPrison) {
             showJailThrowDiceBtn=true;
+        }else{
+            showThrowDiceBtn=true;
         }
         
         if (Game.players.get(player).GetOutCard>0) {
@@ -356,7 +261,6 @@ public class GameBoard extends javax.swing.JFrame {
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y);
             y+=copy.getHeight();
-            copy.setVisible(false);
             gamecontrol.optionPanel.add(copy);
             System.out.println("Inserted jail dice button");
         }
@@ -365,7 +269,6 @@ public class GameBoard extends javax.swing.JFrame {
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y);
             y+=copy.getHeight();
-            copy.setVisible(false);
             gamecontrol.optionPanel.add(copy);
             System.out.println("Inserted jail pay bail button");
         }
