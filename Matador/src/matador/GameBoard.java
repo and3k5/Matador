@@ -12,6 +12,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,33 +42,52 @@ public class GameBoard extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(width/2), (screenSize.height/2)-(this.getHeight()/2));
         updatePosition();
-        
+        addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_NUM_LOCK){
+                    mapBoard1.whackKeyDown=true;
+                }
+                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_NUM_LOCK) {
+                    mapBoard1.whackKeyDown=false;
+                }
+            }
+        });
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
-
+            private JFrame frame;
+            public TimerTask getVars(JFrame frm) {
+                frame = frm;
+                return this;
+            }
             @Override
             public void run() {
                 mapBoard1.updateUI();
                 updatePosition();
+                if (mapBoard1.whackKeyDown) {
+                    frame.setLocation(frame.getX()+(int)(Math.sin(System.nanoTime())*10.0), frame.getY()+(int)(Math.cos(System.nanoTime())*5.0));
+                }
             }
             
-        },100,10);
+        }.getVars(this),100,10);
         JButton throwDiceBtn = new JButton();
         throwDiceBtn.setText("Kast terningerne");
         throwDiceBtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Button dice clicked");
-                //int diceCnt=Game.dicesEqual;
-                //int playerid=Game.currentPlayer;
-                Game.GA_ThrowDice(); //To change body of generated methods, choose Tools | Templates.
-                /*if ((diceCnt==Game.dicesEqual)&&(playerid==Game.currentPlayer)) {
-                    //(JButton)e.getSource()
-                    showNextPlayerBtn=true;
-                    showThrowDiceBtn=false;
-                    refreshGameControl();
-                }*/
+                // Button dice clicked
+                Game.GA_ThrowDice(); 
             }
         });
         JButton mortgageBtn = new JButton();
@@ -79,30 +100,26 @@ public class GameBoard extends javax.swing.JFrame {
             }
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Button mortage clicked");
+                // Button mortage clicked");
                 MortgageDialog mortgageDialog = new MortgageDialog(frame, true, Game.currentPlayer);
             }
         }.getVars(this));
         JButton nextPlayerBtn = new JButton();
         nextPlayerBtn.setText("Næste spiller");
-        nextPlayerBtn.setVisible(false);
         nextPlayerBtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Button next player clicked");
                 Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 clearGameControl();
             }
         });
         JButton jailThrowDiceBtn = new JButton();
         jailThrowDiceBtn.setText("Kast terningerne for 2 ens");
-        jailThrowDiceBtn.setVisible(false);
         jailThrowDiceBtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Button (jail) throw dice clicked");
                 Game.GA_JailThrowDice();
                 if (Game.players.get(Game.currentPlayer).InPrison) {
                     // If player still is in prison after throw dice
@@ -111,12 +128,14 @@ public class GameBoard extends javax.swing.JFrame {
                         showJailPayBailBtn=false;
                     }else{
                         // If this is the last try
-                        if (Game.players.get(Game.currentPlayer).PrisonTurns>2) {
+                        if (Game.players.get(Game.currentPlayer).PrisonTurns>1) {
                             // If this is the third round the player is in prison
                             showJailThrowDiceBtn=false;
                             showJailPayBailBtn=true;
                             showNextPlayerBtn=false;
                         }else{
+                            Game.JailDiceTries=0;
+                            Game.players.get(Game.currentPlayer).PrisonTurns++;
                             // If this is not the third round the player is in prison
                             showJailThrowDiceBtn=false;
                             showJailPayBailBtn=false;
@@ -124,14 +143,14 @@ public class GameBoard extends javax.swing.JFrame {
                         }
                     }
                     refreshGameControl();
+                }else{
+                    //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                    //clearGameControl();
                 }
-                //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
-                clearGameControl();
             }
         });
         JButton jailPayBailBtn = new JButton();
         jailPayBailBtn.setText("Betal kaution (1000 kr.)");
-        jailPayBailBtn.setVisible(false);
         jailPayBailBtn.addActionListener(new ActionListener() {
 
             @Override
@@ -163,7 +182,6 @@ public class GameBoard extends javax.swing.JFrame {
         });
         JButton jailFreeCardBtn = new JButton();
         jailFreeCardBtn.setText("Brug fængselsfripas");
-        jailFreeCardBtn.setVisible(false);
         jailFreeCardBtn.addActionListener(new ActionListener() {
 
             @Override
@@ -234,6 +252,9 @@ public class GameBoard extends javax.swing.JFrame {
         
         if (Game.players.get(player).InPrison) {
             showJailThrowDiceBtn=true;
+            if (Game.JailDiceTries==0) {
+                showJailPayBailBtn=true;
+            }
         }else{
             showThrowDiceBtn=true;
         }
@@ -247,59 +268,58 @@ public class GameBoard extends javax.swing.JFrame {
         // mortgageOption
         
         gamecontrol.optionPanel.removeAll();
-        int y=0;
+        int y=50;
         if (showThrowDiceBtn) {
+            // Insert dice button
             JButton copy = choices.get(0);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y);
-            y+=copy.getHeight();
+            copy.setLocation(0,y*3);
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted dice button");
         }
         if (showJailThrowDiceBtn) {
+            // Insert prison/jail dice button
             JButton copy = choices.get(3);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y);
+            copy.setLocation(0,y*3);
             y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted jail dice button");
         }
         if (showJailPayBailBtn) {
+            // Insert pay jail bail button
             JButton copy = choices.get(4);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y);
             y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted jail pay bail button");
         }
         if (showMortgageBtn) {
+            // Insert mortage btn
             JButton copy = choices.get(1);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y);
+            copy.setLocation(0,y*0);
             y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted mortage button");
         }
         if (showJailFreeCardBtn) {
+            // Insert jail free card button
             JButton copy = choices.get(5);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y);
+            copy.setLocation(0,y*2);
             y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted freecard button");
         }
         if (true) {
+            // Insert next player btn
             JButton copy = choices.get(2);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
-            copy.setLocation(0,y);
-            y+=copy.getHeight();
-            if (!showNextPlayerBtn) {
-                copy.setVisible(false);
+            copy.setLocation(0,y*3);
+            if (showNextPlayerBtn) {
+                copy.setEnabled(true);
             }else{
-                copy.setVisible(true);
+                copy.setEnabled(false);
             }
+            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
-            System.out.println("Inserted next player button");
         }
         DefaultTableModel model = (DefaultTableModel)gamecontrol.jTable1.getModel();
         int count=0;
@@ -329,6 +349,7 @@ public class GameBoard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Matador");
+        setBackground(new java.awt.Color(102, 153, 0));
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
         setResizable(false);
@@ -365,6 +386,7 @@ public class GameBoard extends javax.swing.JFrame {
             }
         });
 
+        mapBoard1.setBackground(new java.awt.Color(102, 153, 0));
         mapBoard1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -138,6 +138,7 @@ public class Game {
             Player player = players.get(currentPlayer);
             dices[0].Throw();
             dices[1].Throw();
+            //dices[0].number = 1+((dices[1].number+1)%6);
             if (dices[0].number == dices[1].number)
             {
                 player.InPrison = false;
@@ -148,6 +149,7 @@ public class Game {
                 JailDiceTries++;
             }
         }else{
+            
             //JailDiceTries=0;
             //currentPlayer=(currentPlayer+1)%players.size();
         }
@@ -156,10 +158,14 @@ public class Game {
         Player player = players.get(currentPlayer);
         dices[0].Throw();
         dices[1].Throw();
+        //if (dicesEqual<3) {
+        //    dices[0].number = dices[1].number; // HAX
+        //}
         if (!player.InPrison) {
             // Player is not in prison
             if (dices[0].number==dices[1].number) {
                 if (!trackDices) {
+                    // If this is the first time
                     trackDices=true;
                     dicesEqual=0;
                 }
@@ -187,15 +193,20 @@ public class Game {
                 trackDices=false;
                 dicesEqual=0;
             }
-            int diceValue=dices[0].number+dices[1].number;
-            for (int tmpPos=0;tmpPos<diceValue-1;tmpPos++) {
-                fields.get(player.ChangePosition(1)).Passed(player);
-            }
-            fields.get(player.ChangePosition(1)).Lands(player);
-            if (trackDices) {
-               // currentPlayer=(currentPlayer+1)%players.size();
+            if (player.InPrison!=true) {
+                // Doing events after
+                int diceValue=dices[0].number+dices[1].number;
+                for (int tmpPos=0;tmpPos<diceValue-1;tmpPos++) {
+                    fields.get(player.ChangePosition(1)).Passed(player);
+                }
+                fields.get(player.ChangePosition(1)).Lands(player);
+                if (trackDices) {
+                   // currentPlayer=(currentPlayer+1)%players.size();
+                }
+                gameboard.refreshGameControl();
             }
             if (player.InPrison) {
+                // You are now in prison. haha!
                 gameboard.showJailFreeCardBtn=false;
                 gameboard.showJailPayBailBtn=false;
                 gameboard.showJailThrowDiceBtn=false;
@@ -203,7 +214,8 @@ public class Game {
                 gameboard.showNextPlayerBtn=true;
                 gameboard.showThrowDiceBtn=false;
                 gameboard.refreshGameControl();
-            }else{
+            }else if (trackDices!=true) {
+                // You can still use mortgage..
                 gameboard.showJailFreeCardBtn=false;
                 gameboard.showJailPayBailBtn=false;
                 gameboard.showJailThrowDiceBtn=false;
@@ -232,7 +244,6 @@ public class Game {
             }
         }else{
             // Player is in prison
-            fields.get(player.Position).Lands(player);
         }
     }
     private static boolean GameRunning;
@@ -357,22 +368,25 @@ public class Game {
                             break;
                         default:
                             // If this should appear in the console, then we're screwed
-                            System.out.println("Weird XML");
+                            System.out.println("Warning - Weird XML");
                             break;
                     }
                 }
             }
         } catch (ParserConfigurationException ex) {
             System.out.println("Could not read XML file..");
+            JOptionPane.showMessageDialog(gameboard, "Error reading XML \n"+ex.getMessage());
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
             System.out.println("Could not read XML file..");
+            JOptionPane.showMessageDialog(gameboard, "Error reading XML \n"+ex.getMessage());
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             System.out.println("Could not read XML file..");
+            JOptionPane.showMessageDialog(gameboard, "Error reading XML \n"+ex.getMessage());
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("XML function done");
+        System.out.println("XML File Read done");
     }
     private static String getNodeValue(String property,Element e) {
         // An easy way to read properties from a node
@@ -383,7 +397,7 @@ public class Game {
             return node.getNodeValue();
         }
         catch (NullPointerException err) {
-            System.out.println("Error reading: "+property);
+            JOptionPane.showMessageDialog(gameboard, "Error reading XML node: "+property+" of "+e.getNodeName()+"\n"+err.getMessage());
         }
         return null;
     }

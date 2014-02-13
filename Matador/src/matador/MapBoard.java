@@ -15,6 +15,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
@@ -38,6 +40,8 @@ public class MapBoard extends javax.swing.JPanel {
     /**
      * Creates new form MapBoard
      */
+    public boolean whackKeyDown=false;
+    private ArrayList<Double> posBuffer;
     public MapBoard() {
         initComponents();
         mouse = new Point(-1,-1);
@@ -53,6 +57,10 @@ public class MapBoard extends javax.swing.JPanel {
                 mouse=e.getPoint();
             }
         });
+        posBuffer = new ArrayList<>();
+        for (int i=0;i<Game.players.size();i++) {
+            posBuffer.add(0.0);
+        }
         try {
             diceimg=ImageIO.read(new File("images/DICE.png"));
         } catch (IOException ex) {
@@ -94,6 +102,11 @@ public class MapBoard extends javax.swing.JPanel {
         int circle1_w=(int)((circleSize-circleLineWidth)-((circleSize-circleLineWidth)/2));
         int circle1_h=(int)((circleSize-circleLineWidth)-((circleSize-circleLineWidth)/2));
         
+        if (whackKeyDown) {
+            int degg = (int)((System.nanoTime()/10000000.0)%360);
+            rotateBy(degg,g2d);
+            
+        }
         
         int degWidth = 0;
         degWidth = (360/Game.fields.size());
@@ -131,8 +144,20 @@ public class MapBoard extends javax.swing.JPanel {
                 Street street=((Street)field);
                 fillColor=Game.streetgroups.get(street.GroupID).color;
                 mustFill=true;
-            }else if (field.getClass()==TryLuck.class) {
+            }else if ((field.getClass()==TryLuck.class)||(field.getClass()==GoToPrison.class)||(field.getClass()==Prison.class)) {
                 fillColor=new Color(0,0,0);
+                mustFill=true;
+            }else if (field.getClass()==Parking.class) {
+                fillColor=new Color(0,0,255);
+                mustFill=true;
+            }else if (field.getClass()==Start.class) {
+                fillColor=new Color(255,0,0);
+                mustFill=true;
+            }else if ((field.getClass()==IncomeTax.class)||(field.getClass()==StateTax.class)) {
+                fillColor=new Color(128,255,128);
+                mustFill=true;
+            }else if ((field.getClass()==Brewery.class)||(field.getClass()==ShippingLines.class)) {
+                fillColor=new Color(0,0,128);
                 mustFill=true;
             }
             int fx=(int)Math.sin(System.nanoTime())*10;
@@ -149,7 +174,7 @@ public class MapBoard extends javax.swing.JPanel {
                 g2d.fill(fillPath);
                 g2d.setColor(new Color(0,0,0));
             }else{
-                //System.out.println("Mouse outside");
+                
             }
             
             // Text
@@ -164,30 +189,42 @@ public class MapBoard extends javax.swing.JPanel {
                 int y=circleSize/2;
                 g2d.drawString(street.Name,x,y);
             }else if (field.getClass()==Start.class) {
+                g2d.setColor(new Color(255,255,255));
                 String cap = "Start";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==Brewery.class) {
+                g2d.setColor(new Color(255,255,255));
                 Brewery brewery=((Brewery)field);
                 int x=(int) (circleSize-g2d.getFontMetrics().stringWidth(brewery.Name)-circleLineWidth*2);
                 int y=circleSize/2;
                 g2d.drawString(brewery.Name,x,y);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==GoToPrison.class) {
+                g2d.setColor(new Color(255,255,255));
                 String cap="Gå til fængsel";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==IncomeTax.class) {
                 String cap="Betal inkomst skat";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
             }else if (field.getClass()==Parking.class) {
+                g2d.setColor(new Color(255,255,255));
                 String cap="Parkering";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==Prison.class) {
+                g2d.setColor(new Color(255,255,255));
                 String cap="Fængsel";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==ShippingLines.class) {
+                g2d.setColor(new Color(255,255,255));
                 ShippingLines shiplines=((ShippingLines)field);
                 int x=(int) (circleSize-g2d.getFontMetrics().stringWidth(shiplines.Name)-circleLineWidth*2);
                 int y=circleSize/2;
                 g2d.drawString(shiplines.Name,x,y);
+                g2d.setColor(new Color(0,0,0));
             }else if (field.getClass()==StateTax.class) {
                 String cap="Ekstra statsskat";
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
@@ -214,10 +251,14 @@ public class MapBoard extends javax.swing.JPanel {
             int y_2=0;
             int x=0;
             int y=0;
-            x_1=(int) (circleSize/2+Math.cos((player.Position*degWidth+degWidth/2)*Math.PI/180)*iW);
-            y_1=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*iW);
-            x_2=(int) (circleSize/2+Math.cos((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oW);
-            y_2=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oH);
+            double playerPos=(player.Position*degWidth+degWidth/2);
+            int index = Game.players.indexOf(player);
+            double posB = (posBuffer.get(index)*7.0+playerPos)/8.0;
+            posBuffer.set(index, posB);
+            x_1=(int) (circleSize/2+Math.cos(posB*Math.PI/180)*iW);
+            y_1=(int) (circleSize/2+Math.sin(posB*Math.PI/180)*iW);
+            x_2=(int) (circleSize/2+Math.cos(posB*Math.PI/180)*-oW);
+            y_2=(int) (circleSize/2+Math.sin(posB*Math.PI/180)*-oH);
             x=(int)easeNone(i,x_1,x_2-x_1,Game.players.size()+1);
             y=(int)easeNone(i,y_1,y_2-y_1,Game.players.size()+1);
             double hl=0.0;

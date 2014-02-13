@@ -133,7 +133,7 @@ and open the template in the editor.
         </Field>
         <Field>
             <Type>Brewery</Type>
-            <Name>Tuborg Squash Tapperi</Name>
+            <Name>Squash Tapperi</Name>
             <Price>3000</Price>
         </Field>
         <Field>
