@@ -56,33 +56,29 @@ public class ShippingLines extends Field {
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
-                
+                int Pay = 0;
                 int cnt = CountShippingLines();
                 Player OPlayer = Game.players.get(Owner);
                 if (cnt == 1)
                 {
-                    int Pay;
                     Pay = -500;
                     P.ChangeMoney(Pay);
                     OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 2)
                 {
-                    int Pay;
                     Pay = -1000;    
                     P.ChangeMoney(Pay);
                     OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 3)
                 {
-                    int Pay;
                     Pay = -2000;    
                     P.ChangeMoney(Pay);
                     OPlayer.ChangeMoney(-Pay);
                 }
                 else if (cnt == 4)
                 {
-                    int Pay;
                     Pay = -4000;
                     P.ChangeMoney(Pay);
                     OPlayer.ChangeMoney(-Pay);
