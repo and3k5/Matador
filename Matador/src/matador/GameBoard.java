@@ -15,8 +15,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,6 +40,7 @@ public class GameBoard extends javax.swing.JFrame {
      * Creates new form GameBoard
      */
     public GameControl gamecontrol;
+    private EasterEggSound easteregg;
     public GameBoard() {
         initComponents();
         setVisible(true);
@@ -42,27 +50,48 @@ public class GameBoard extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(width/2), (screenSize.height/2)-(this.getHeight()/2));
         updatePosition();
+        easteregg = new EasterEggSound();
         addKeyListener(new KeyListener() {
-
+            private boolean aDown=false;
+            private boolean sDown=false;
+            private boolean dDown=false;
+            private boolean fDown=false;
             @Override
             public void keyTyped(KeyEvent e) {
             }
-
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_NUM_LOCK){
-                    mapBoard1.whackKeyDown=true;
+                int keycode = e.getKeyCode();
+                if ((keycode==KeyEvent.VK_A)||(keycode==KeyEvent.VK_S)||(keycode==KeyEvent.VK_D)||(keycode==KeyEvent.VK_F)) {
+                    if (keycode==KeyEvent.VK_A) {
+                        aDown=true;
+                    }else if (keycode==KeyEvent.VK_S) {
+                        sDown=true;
+                    }else if (keycode==KeyEvent.VK_D) {
+                        dDown=true;
+                    }else if (keycode==KeyEvent.VK_F) {
+                        fDown=true;
+                    }
+                    if (aDown&&sDown&&dDown&&fDown) {
+                        mapBoard1.whackKeyDown=true;
+                        easteregg.startSound();
+                    }
                 }
                 
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_NUM_LOCK) {
+                int keycode = e.getKeyCode();
+                if ((keycode==KeyEvent.VK_A)||(keycode==KeyEvent.VK_S)||(keycode==KeyEvent.VK_D)||(keycode==KeyEvent.VK_F)) {
+                    aDown=sDown=dDown=fDown=false;
                     mapBoard1.whackKeyDown=false;
+                    easteregg.stopSound();
                 }
             }
         });
+        
+        
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             private JFrame frame;
@@ -70,12 +99,23 @@ public class GameBoard extends javax.swing.JFrame {
                 frame = frm;
                 return this;
             }
+            public String generateName() {
+                char[] sequence = new char[25];
+                for (int i=0;i<sequence.length;i++) {
+                    int r=(new int[]{65,97})[new Random().nextInt(1)];
+                    sequence[i] = (char)(r+new Random().nextInt(25));
+                }
+                return String.valueOf(sequence);
+            }
             @Override
             public void run() {
                 mapBoard1.updateUI();
                 updatePosition();
                 if (mapBoard1.whackKeyDown) {
-                    frame.setLocation(frame.getX()+(int)(Math.sin(System.nanoTime())*10.0), frame.getY()+(int)(Math.cos(System.nanoTime())*5.0));
+                    //frame.setLocation(frame.getX()+(int)(Math.sin(System.nanoTime())*10.0), frame.getY()+(int)(Math.cos(System.nanoTime())*5.0));
+                    frame.setTitle(generateName());
+                }else if (frame.getTitle()!="Matador") {
+                    frame.setTitle("Matador");
                 }
             }
             
