@@ -6,6 +6,8 @@
 
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -14,6 +16,7 @@ public class IncomeTax extends Field{
     @Override
     public void Lands(Player P)
     {
+        JOptionPane.showMessageDialog(null, "Betal din inkomstskat, på 4000 eller 10%.\n(valgt den bedste værdig for dig)");
         int PMoney = P.GetMoney();
         if (PMoney >= 40000)
         {
