@@ -281,7 +281,6 @@ public class GameBoard extends javax.swing.JFrame {
             JButton copy = choices.get(3);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y*3);
-            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
         }
         if (showJailPayBailBtn) {
@@ -289,7 +288,6 @@ public class GameBoard extends javax.swing.JFrame {
             JButton copy = choices.get(4);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y);
-            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
         }
         if (showMortgageBtn) {
@@ -297,7 +295,6 @@ public class GameBoard extends javax.swing.JFrame {
             JButton copy = choices.get(1);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y*0);
-            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
         }
         if (showJailFreeCardBtn) {
@@ -305,20 +302,13 @@ public class GameBoard extends javax.swing.JFrame {
             JButton copy = choices.get(5);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y*2);
-            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
         }
-        if (true) {
+        if (showNextPlayerBtn) {
             // Insert next player btn
             JButton copy = choices.get(2);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
             copy.setLocation(0,y*3);
-            if (showNextPlayerBtn) {
-                copy.setEnabled(true);
-            }else{
-                copy.setEnabled(false);
-            }
-            y+=copy.getHeight();
             gamecontrol.optionPanel.add(copy);
         }
         DefaultTableModel model = (DefaultTableModel)gamecontrol.jTable1.getModel();
