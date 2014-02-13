@@ -168,19 +168,22 @@ public class Game {
                     new GoToPrison().Lands(player);
                     trackDices=false;
                     dicesEqual=0;
-                    currentPlayer=(currentPlayer+1)%players.size();
-                    
-                    gameboard.clearGameControl();
+                    //currentPlayer=(currentPlayer+1)%players.size();
+                    gameboard.showJailFreeCardBtn=false;
+                    gameboard.showJailPayBailBtn=false;
+                    gameboard.showJailThrowDiceBtn=false;
+                    gameboard.showMortgageBtn=false;
+                    gameboard.showNextPlayerBtn=true;
+                    gameboard.showThrowDiceBtn=false;
+                    gameboard.refreshGameControl();
                 }else{
                     // TODO
                     // still his turn;
-                    
+                    gameboard.showThrowDiceBtn=true;
+                    gameboard.showNextPlayerBtn=false;
+                    gameboard.refreshGameControl();
                 }
             }else{
-                if (trackDices) {
-                    currentPlayer=(currentPlayer+1)%players.size();
-                    
-                }
                 trackDices=false;
                 dicesEqual=0;
             }
@@ -189,6 +192,44 @@ public class Game {
                 fields.get(player.ChangePosition(1)).Passed(player);
             }
             fields.get(player.ChangePosition(1)).Lands(player);
+            if (trackDices) {
+               // currentPlayer=(currentPlayer+1)%players.size();
+            }
+            if (player.InPrison) {
+                gameboard.showJailFreeCardBtn=false;
+                gameboard.showJailPayBailBtn=false;
+                gameboard.showJailThrowDiceBtn=false;
+                gameboard.showMortgageBtn=false;
+                gameboard.showNextPlayerBtn=true;
+                gameboard.showThrowDiceBtn=false;
+                gameboard.refreshGameControl();
+            }else{
+                gameboard.showJailFreeCardBtn=false;
+                gameboard.showJailPayBailBtn=false;
+                gameboard.showJailThrowDiceBtn=false;
+                gameboard.showMortgageBtn=false;
+                gameboard.showNextPlayerBtn=true;
+                gameboard.showThrowDiceBtn=false;
+                for (Field field : Game.fields) {
+                    if (field.getClass()==Brewery.class) {
+                        Brewery brew = ((Brewery)field);
+                        if (brew.Owner==currentPlayer) {
+                            gameboard.showMortgageBtn=true;
+                        }
+                    }else if (field.getClass()==Street.class) {
+                        Street street = ((Street)field);
+                        if (street.Owner==currentPlayer) {
+                            gameboard.showMortgageBtn=true;
+                        }
+                    }else if (field.getClass()==ShippingLines.class) {
+                        ShippingLines sl = ((ShippingLines)field);
+                        if (sl.Owner==currentPlayer) {
+                            gameboard.showMortgageBtn=true;
+                        }
+                    }
+                }
+                gameboard.refreshGameControl();
+            }
         }else{
             // Player is in prison
             fields.get(player.Position).Lands(player);

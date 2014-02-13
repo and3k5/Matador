@@ -78,7 +78,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Pants&#xe6;t"/>
+        <Property name="text" type="java.lang.String" value="Pants&#xe6;t / Afpants&#xe6;tte"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MouseClicked"/>

@@ -100,21 +100,21 @@ public class MapBoard extends javax.swing.JPanel {
         int w=this.getWidth();
         int h=this.getHeight();
         
-        int iW=circle1_w-circle1_x;
-        int iH=circle1_h-circle1_y;
-        int oW=circle1_w-circle0_w;
-        int oH=circle1_h-circle0_h;
+        int iW=(int) ((circleLineWidth)+(circle1_w-circle1_x));
+        int iH=(int) ((circle1_h-circle1_y)+(circleLineWidth));
+        int oW=(int)((circle1_w-circle0_w)+(circleLineWidth*-0.25));
+        int oH=(int)((circle1_h-circle0_h)+(circleLineWidth*-0.25));
         int fieldN=0;
         for (int i=0;i<360;i+=degWidth) {
             g2d.setColor(new Color(0,0,0));
-            int x1=(int) (circleSize/2+Math.cos(i*Math.PI/180)*iW);
-            int y1=(int) (circleSize/2+Math.sin(i*Math.PI/180)*iH);
-            int x2=(int) (circleSize/2+Math.cos(i*Math.PI/180)*-oW);
-            int y2=(int) (circleSize/2+Math.sin(i*Math.PI/180)*-oH);
-            int x3=(int) (circleSize/2+Math.cos((i+degWidth)*Math.PI/180)*iW);
-            int y3=(int) (circleSize/2+Math.sin((i+degWidth)*Math.PI/180)*iH);
-            int x4=(int) (circleSize/2+Math.cos((i+degWidth)*Math.PI/180)*-oW);
-            int y4=(int) (circleSize/2+Math.sin((i+degWidth)*Math.PI/180)*-oH);
+            int x1=(int) ((circleSize/2+1)+Math.cos(i*Math.PI/180)*iW);
+            int y1=(int) ((circleSize/2+1)+Math.sin(i*Math.PI/180)*iH);
+            int x2=(int) ((circleSize/2+1)+Math.cos(i*Math.PI/180)*-oW);
+            int y2=(int) ((circleSize/2+1)+Math.sin(i*Math.PI/180)*-oH);
+            int x3=(int) ((circleSize/2+1)+Math.cos((i+degWidth)*Math.PI/180)*iW);
+            int y3=(int) ((circleSize/2+1)+Math.sin((i+degWidth)*Math.PI/180)*iH);
+            int x4=(int) ((circleSize/2+1)+Math.cos((i+degWidth)*Math.PI/180)*-oW);
+            int y4=(int) ((circleSize/2+1)+Math.sin((i+degWidth)*Math.PI/180)*-oH);
             
             // fill
             GeneralPath fillPath = new GeneralPath();
@@ -130,6 +130,9 @@ public class MapBoard extends javax.swing.JPanel {
             if (field.getClass()==Street.class) {
                 Street street=((Street)field);
                 fillColor=Game.streetgroups.get(street.GroupID).color;
+                mustFill=true;
+            }else if (field.getClass()==TryLuck.class) {
+                fillColor=new Color(0,0,0);
                 mustFill=true;
             }
             int fx=(int)Math.sin(System.nanoTime())*10;
@@ -152,7 +155,7 @@ public class MapBoard extends javax.swing.JPanel {
             // Text
             int textRotation=(int)(i+(degWidth/2)+(circleLineWidth/2));
             rotateBy(textRotation,g2d);
-            Font font = new Font("Verdana", Font.PLAIN, (int)(10*Math.max(1.0,(circleSize/450.0))));
+            Font font = new Font("Verdana", Font.BOLD, (int)(10*Math.max(1.0,(circleSize/450.0))));
             //System.out.println("circleSize: "+circleSize+" sizeP: "+Math.max(1.0,(circleSize/450.0)));
             g2d.setFont(font);
             if (field.getClass()==Street.class) {
@@ -190,7 +193,9 @@ public class MapBoard extends javax.swing.JPanel {
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
             }else if (field.getClass()==TryLuck.class) {
                 String cap="Prøv lykken";
+                g2d.setColor(new Color(255,255,255));
                 g2d.drawString(cap, circleSize-g2d.getFontMetrics().stringWidth(cap)-circleLineWidth*2, circleSize/2);
+                g2d.setColor(new Color(0,0,0));
             }
             fieldN++;
             rotateBy(-textRotation,g2d);
@@ -213,9 +218,18 @@ public class MapBoard extends javax.swing.JPanel {
             y_1=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*iW);
             x_2=(int) (circleSize/2+Math.cos((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oW);
             y_2=(int) (circleSize/2+Math.sin((player.Position*degWidth+degWidth/2)*Math.PI/180)*-oH);
-            x=(int)easeNone(i,x_1,x_2-x_1,Game.players.size());
-            y=(int)easeNone(i,y_1,y_2-y_1,Game.players.size());
-            g2d.setColor(player.Color);
+            x=(int)easeNone(i,x_1,x_2-x_1,Game.players.size()+1);
+            y=(int)easeNone(i,y_1,y_2-y_1,Game.players.size()+1);
+            double hl=0.0;
+            if (Game.players.indexOf(player)==Game.currentPlayer) {
+                if (((System.nanoTime()/800000)%1000.0)<500.0) {
+                    hl=0.5;
+                }else{
+                    hl=-0.5;
+                }
+            }
+            //System.out.println(hl);
+            g2d.setColor(new Color((int)Math.max(0,Math.min(255,(player.Color.getRed()+((255-player.Color.getRed())*hl)))),(int)Math.max(0,Math.min(255,(player.Color.getGreen()+((255-player.Color.getGreen())*hl)))),(int)Math.max(0,Math.min(255,(player.Color.getBlue()+((255-player.Color.getBlue())*hl))))));
             g2d.fillArc(x-dotSize/2, y-dotSize/2, dotSize, dotSize, 0, 360);
             g2d.setColor(new Color(0,0,0));
 

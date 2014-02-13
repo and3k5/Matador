@@ -6,6 +6,12 @@
 
 package matador;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 /**
  *
  * @author and3k5
@@ -16,9 +22,40 @@ public class GameControl extends javax.swing.JFrame {
      * Creates new form GameControl
      */
     private GameBoard gameboard;
+    public void updateList() {
+        jTable1.setRowSelectionInterval(Game.currentPlayer, Game.currentPlayer);
+        jTable1.setSelectionBackground(Game.players.get(Game.currentPlayer).Color);
+    }
     public GameControl(GameBoard gboard) {
         initComponents();
         gameboard=gboard;
+        jTable1.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                updateList();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                updateList();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                updateList();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                
+            }
+        });
     }
 
     /**
@@ -77,14 +114,14 @@ public class GameControl extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Navn", "Penge"
+                "Navn", "Penge", "Fængselsfripas"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -95,7 +132,9 @@ public class GameControl extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jTable1.setPreferredSize(new java.awt.Dimension(200, 350));
+        jTable1.setRowHeight(32);
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
@@ -106,8 +145,8 @@ public class GameControl extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(optionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(optionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

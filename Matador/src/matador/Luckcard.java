@@ -26,6 +26,7 @@ public class Luckcard {
             case 1:
                 Text = "Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer 'START', indkasserer De ikke kr. 4000.";
                 P.InPrison = true;
+                P.PrisonTurns=0;
                 P.Position = 10;
                 break;
             case 2:

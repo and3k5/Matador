@@ -64,12 +64,12 @@ public class GameBoard extends javax.swing.JFrame {
                 int diceCnt=Game.dicesEqual;
                 int playerid=Game.currentPlayer;
                 Game.GA_ThrowDice(); //To change body of generated methods, choose Tools | Templates.
-                if ((diceCnt==Game.dicesEqual)&&(playerid==Game.currentPlayer)) {
+                /*if ((diceCnt==Game.dicesEqual)&&(playerid==Game.currentPlayer)) {
                     //(JButton)e.getSource()
                     showNextPlayerBtn=true;
                     showThrowDiceBtn=false;
                     refreshGameControl();
-                }
+                }*/
             }
             
             @Override
@@ -146,7 +146,7 @@ public class GameBoard extends javax.swing.JFrame {
             }
         });
         JButton jailThrowDiceBtn = new JButton();
-        jailThrowDiceBtn.setText("Kast terningerne");
+        jailThrowDiceBtn.setText("Kast terningerne for 2 ens");
         jailThrowDiceBtn.setVisible(false);
         jailThrowDiceBtn.addMouseListener(new MouseListener() {
             @Override
@@ -195,7 +195,7 @@ public class GameBoard extends javax.swing.JFrame {
             }
         });
         JButton jailPayBailBtn = new JButton();
-        jailPayBailBtn.setText("Kast terningerne");
+        jailPayBailBtn.setText("Betal kaution (1000 kr.)");
         jailPayBailBtn.setVisible(false);
         jailPayBailBtn.addMouseListener(new MouseListener() {
             @Override
@@ -241,11 +241,44 @@ public class GameBoard extends javax.swing.JFrame {
             public void mouseExited(MouseEvent e) {
             }
         });
+        JButton jailFreeCardBtn = new JButton();
+        jailFreeCardBtn.setText("Brug fængselsfripas");
+        jailFreeCardBtn.setVisible(false);
+        jailFreeCardBtn.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Button jail freepass clicked");
+                Game.players.get(Game.currentPlayer).GetOutCard--;
+                Game.players.get(Game.currentPlayer).InPrison=false;
+                Game.players.get(Game.currentPlayer).PrisonTurns=0;
+                refreshGameControl();
+                
+                //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                //clearGameControl();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
         choices.add(throwDiceBtn);
         choices.add(mortgageBtn);
         choices.add(nextPlayerBtn);
         choices.add(jailThrowDiceBtn);
         choices.add(jailPayBailBtn);
+        choices.add(jailFreeCardBtn);
     }
     public void closing(JFrame frame) {
         if (JOptionPane.showConfirmDialog(null, "Dette vil afslutte Matador. Er du sikker på at du vil lukke?", "Er du sikker?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)==JOptionPane.YES_OPTION) {
@@ -260,6 +293,7 @@ public class GameBoard extends javax.swing.JFrame {
     public boolean showNextPlayerBtn=false;
     public boolean showJailThrowDiceBtn=false;
     public boolean showJailPayBailBtn=false;
+    public boolean showJailFreeCardBtn=false;
     public void initGame() {
         System.out.println("initGame");
         Game.currentPlayer=0;
@@ -272,6 +306,7 @@ public class GameBoard extends javax.swing.JFrame {
         showNextPlayerBtn=false;
         showJailThrowDiceBtn=false;
         showJailPayBailBtn=false;
+        showJailFreeCardBtn=false;
         int player=Game.currentPlayer;
         for (Field field : Game.fields) {
             if (field.getClass()==Brewery.class) {
@@ -296,6 +331,10 @@ public class GameBoard extends javax.swing.JFrame {
             showThrowDiceBtn=true;
         }else{
             showJailThrowDiceBtn=true;
+        }
+        
+        if (Game.players.get(player).GetOutCard>0) {
+            showJailFreeCardBtn=true;
         }
         refreshGameControl();
     }
@@ -338,6 +377,14 @@ public class GameBoard extends javax.swing.JFrame {
             gamecontrol.optionPanel.add(copy);
             System.out.println("Inserted mortage button");
         }
+        if (showJailFreeCardBtn) {
+            JButton copy = choices.get(5);
+            copy.setSize(gamecontrol.optionPanel.getWidth(),50);
+            copy.setLocation(0,y);
+            y+=copy.getHeight();
+            gamecontrol.optionPanel.add(copy);
+            System.out.println("Inserted freecard button");
+        }
         if (true) {
             JButton copy = choices.get(2);
             copy.setSize(gamecontrol.optionPanel.getWidth(),50);
@@ -355,15 +402,15 @@ public class GameBoard extends javax.swing.JFrame {
         int count=0;
         while (model.getRowCount()>0) {
             model.removeRow(0);
-            
             count++;
         }
         if (count>0) model.fireTableRowsInserted(0,count-1);
         for (Player player : Game.players) {
-            model.addRow(new Object[]{player.Name,player.GetMoney()});
+            model.addRow(new Object[]{player.Name,player.GetMoney(),player.GetOutCard});
         }
         model.fireTableRowsInserted(0,Game.players.size());
         gamecontrol.optionPanel.updateUI();
+        gamecontrol.updateList();
         
     }
     /**
@@ -381,7 +428,6 @@ public class GameBoard extends javax.swing.JFrame {
         setTitle("Matador");
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
-        setPreferredSize(new java.awt.Dimension(600, 600));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {

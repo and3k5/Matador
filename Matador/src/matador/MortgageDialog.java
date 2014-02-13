@@ -6,11 +6,9 @@
 
 package matador;
 
-import java.awt.Component;
-import javax.swing.DefaultListCellRenderer;
+import java.util.ArrayList;
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.ListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,30 +20,64 @@ public class MortgageDialog extends javax.swing.JDialog {
      * Creates new form MortgageDialog
      */
     public int player=-1;
+    public ArrayList<Integer> fieldsR;
+    public DefaultListModel model;
     public MortgageDialog(java.awt.Frame parent, boolean modal,int pl) {
         super(parent, modal);
         initComponents();
         player=pl;
-        DefaultListModel model = (DefaultListModel)jList1.getModel();
+        model = new DefaultListModel();
+        jList1.setModel(model);
+        fieldsR = new ArrayList<>();
         for (Field field : Game.fields) {
             String name="";
+            String type="";
+            String mortgage="";
+            Boolean mort=false;
             Boolean insert=false;
             if (field.getClass()==Brewery.class) {
                 Brewery brew = ((Brewery)field);
+                type="Bryggeri";
                 name = brew.Name;
-                insert=(brew.Owner==pl);
+                mort = brew.Mortgage;
+                if (brew.Owner==pl) {
+                    System.out.print(type);
+                    insert=true;
+                }
             }else if (field.getClass()==Street.class) {
                 Street street = ((Street)field);
                 name = street.Name;
-                insert=(street.Owner==pl);
+                type="Gade";
+                mort = street.Mortgage;
+                if (street.Owner==pl) {
+                    System.out.print(type);
+                    insert=true;
+                }
             }else if (field.getClass()==ShippingLines.class) {
                 ShippingLines sl = ((ShippingLines)field);
                 name = sl.Name;
-                insert=(sl.Owner==pl);
+                type="Redderi";
+                mort = sl.Mortgage;
+                if (sl.Owner==pl) {
+                    System.out.print(type);
+                    insert=true;
+                }
             }
-            if (insert) model.addElement(new DocumentWrapper(name,Game.fields.indexOf(field)));
+            if (insert) {
+                if (mort) {
+                    mortgage="Pantsat";
+                }else{
+                    mortgage="Ikke pantsat";
+                }
+                System.out.println("Pantsæt: "+type+": "+name+" - "+mortgage);
+                model.addElement(type+": "+name+" - "+mortgage);
+                fieldsR.add(Game.fields.indexOf(field));
+            }
         }
         
+        
+        jList1.updateUI();
+        setVisible(true);
     }
 
     /**
@@ -71,7 +103,7 @@ public class MortgageDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(jList1);
 
-        jButton1.setText("Pantsæt");
+        jButton1.setText("Pantsæt / Afpantsætte");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
@@ -122,41 +154,46 @@ public class MortgageDialog extends javax.swing.JDialog {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
+        jList1.updateUI();
         
-    }//GEN-LAST:event_jButton1MouseClicked
-    
-    public class DocumentWrapper {
-        private int data;
-        private String name;
-
-        public DocumentWrapper(String name, int data) {
-            this.name = name;
-            this.data = data;
-        }
-
-        public int getData() {
-            return data;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-
-    public static class DocumentWrapperRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean hasFocus) {
-            if (value instanceof DocumentWrapper) {
-                return super.getListCellRendererComponent(
-                        list, ((DocumentWrapper) value).getName(), index,
-                        isSelected, hasFocus);
+        if (jList1.getSelectedIndex()>=0) {
+            Field f = Game.fields.get(fieldsR.get(jList1.getSelectedIndex()));
+            if (f.getClass()==Brewery.class) {
+                Brewery brew = ((Brewery)f);
+                if (brew.Mortgage) {
+                    brew.Mortgage=false;
+                    Game.players.get(brew.Owner).ChangeMoney(-(brew.Price/2));
+                }else{
+                    brew.Mortgage=true;
+                    Game.players.get(brew.Owner).ChangeMoney((brew.Price/2));
+                }
+            }else if (f.getClass()==Street.class) {
+                Street street = ((Street)f);
+                if (street.Mortgage) {
+                    street.Mortgage=false;
+                    Game.players.get(street.Owner).ChangeMoney(-(street.Price/2));
+                }else{
+                    if (street.Houses==0) {
+                        street.Mortgage=true;
+                        Game.players.get(street.Owner).ChangeMoney((street.Price/2));
+                    }else{
+                        JOptionPane.showMessageDialog(rootPane, "Du kan ikke pantsætte en gade med huse");
+                    }
+                }
+            }else if (f.getClass()==ShippingLines.class) {
+                ShippingLines sl = ((ShippingLines)f);
+                if (sl.Mortgage) {
+                    sl.Mortgage=false;
+                    Game.players.get(sl.Owner).ChangeMoney(-(sl.Price/2));
+                }else{
+                    sl.Mortgage=true;
+                    Game.players.get(sl.Owner).ChangeMoney((sl.Price/2));
+                }
             }
-            return super.getListCellRendererComponent(list, value, index, 
-                    isSelected, hasFocus);
+            Game.gameboard.refreshGameControl();
+            this.dispose();
         }
-    }
+    }//GEN-LAST:event_jButton1MouseClicked
     
     /**
      * @param args the command line arguments
