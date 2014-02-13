@@ -6,6 +6,8 @@
 
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -46,11 +48,13 @@ public class Street extends Field {
         //If enemy lands on yours, a payout must happen
         else if (Owner != Game.players.indexOf(P))
         {
-            if (P.InPrison = false)
+            if ((Game.players.get(Owner)).InPrison == false)
             {
-                //int Pay;
-            
-                //P.ChangeMoney(Pay);
+                int Pay;
+                Pay = Taxes[0];
+                JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                P.ChangeMoney(-Pay);
+                (Game.players.get(Owner)).ChangeMoney(Pay);
             }
         }
     }

@@ -6,6 +6,8 @@
 
 package matador;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author and3k5
@@ -61,6 +63,7 @@ public class Brewery extends Field {
                 {
                     int Pay;
                     Pay = 100*(Game.dices[0].number + Game.dices[1].number);
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
                     P.ChangeMoney(-Pay);
                     OPlayer.ChangeMoney(Pay);
                 }
@@ -68,6 +71,7 @@ public class Brewery extends Field {
                 {
                     int Pay;
                     Pay = 200*(Game.dices[0].number + Game.dices[1].number);
+                    JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
                     P.ChangeMoney(-Pay);
                     OPlayer.ChangeMoney(Pay);
                 }
