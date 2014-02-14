@@ -29,6 +29,7 @@ public class Brewery extends Field {
     
     public int CountBrewery()
     {
+        //Count amount of brewery's the enemy owns so you pay correct amount
         int CountBrew = 0;
         for (Field F: Game.fields )
         {
@@ -49,6 +50,7 @@ public class Brewery extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
+            //Ask if you want to buy it
             Game.requestBuy(P, this);
         }
         //If you land on a enemy's enemy lands on yours, a payout must happen 

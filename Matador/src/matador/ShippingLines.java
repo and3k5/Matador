@@ -30,6 +30,7 @@ public class ShippingLines extends Field {
     
     public int CountShippingLines()
     {
+        //Counts all the shipping lines that the enemy owns so you can pay
         int CountShips = 0;
         for (Field F: Game.fields )
         {
@@ -51,6 +52,7 @@ public class ShippingLines extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
+            //Ask if you want to buy.
             Game.requestBuy(P, this);
         }
         //If you land on enemy players shipping line
@@ -58,6 +60,7 @@ public class ShippingLines extends Field {
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
+                //Pay to your enemy depending on how many shipping lines your enemy owns
                 int Pay = 0;
                 int cnt = CountShippingLines();
                 Player OPlayer = Game.players.get(Owner);
