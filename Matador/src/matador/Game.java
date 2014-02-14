@@ -7,6 +7,7 @@
 
 package matador;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.*;
+import static javax.swing.WindowConstants.*;
 import javax.xml.parsers.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
@@ -28,6 +31,9 @@ public class Game {
     public static ArrayList<StreetGroup> streetgroups;
     public static Dice[] dices;
     public static void main(String[] args) {
+        initializeMain();
+    }
+    public static void initializeMain() {
         // Initialize vars
         currentPlayer=-1;
         players=new ArrayList<>();
@@ -39,21 +45,16 @@ public class Game {
         pnForm.setVisible(true);
     }
     public static GameBoard gameboard;
-    public static void StartGame(ArrayList<String> names) {
-        // When player form is done, this function is called
-        // Colors for players.
-        // This ensures that the players don't have the same color
+    public static void generateColor() {
         ArrayList<Color> usedColors = new ArrayList<>();
-        int divisor=4;
-        for (String name : names) {
-            Player player = new Player();
-            player.Name = name;
+        int divisor=3;
+        for (Player player : players) {
             Color tmp;
             Random rand = new Random();
             boolean breakLoop;
             while (true) {
                 breakLoop=true;
-                tmp = new Color(rand.nextInt(255/divisor)*4,rand.nextInt(255/divisor)*4,rand.nextInt(255/divisor)*4);
+                tmp = new Color(rand.nextInt(255/divisor)*divisor,rand.nextInt(255/divisor)*divisor,rand.nextInt(255/divisor)*divisor);
                 for (Color c : usedColors) {
                     if (c.getRGB()==tmp.getRGB()) {
                         breakLoop=false;
@@ -62,8 +63,19 @@ public class Game {
                 if (breakLoop) break;
             }
             player.Color = new Color(tmp.getRGB());
+        }
+    }
+    public static void StartGame(ArrayList<String> names) {
+        // When player form is done, this function is called
+        // Colors for players.
+        // This ensures that the players don't have the same color
+        for (String name : names) {
+            Player player = new Player();
+            player.Name = name;
+            player.Color = new Color(0,0,0);
             players.add(player);
         }
+        generateColor();
         // Read XML
         readXML();
         GameRunning = true;
@@ -107,9 +119,9 @@ public class Game {
             price = -1;
         }
         int choice=-1;
-        if (theCustomer.GetMoney()>price) {
+        //if (theCustomer.GetMoney()>price) {
             choice=JOptionPane.showOptionDialog(null, theCustomer.Name+":\n"+type+" '"+name+"' er til salg for "+price+" kr.\nVil du købe stedet?", "Valg",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
-        }
+        //}
         if (choice==0) {
             // User wants to buy
             switch (ftype) {
@@ -133,6 +145,51 @@ public class Game {
         return choice;
     }
     public static int JailDiceTries=0;
+    public static void nextPlayer() {
+        // count playing players;
+        int playerscnt=0;
+        for (Player player : players) {
+            if (player.GetMoney()>0) playerscnt++;
+        }
+        if (playerscnt>1) {
+            // still other players
+            boolean inloop=true;
+            while (inloop) {
+                Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                if (Game.players.get(Game.currentPlayer).GetMoney()>0) {
+                    inloop=false;
+                    break;
+                }
+            }
+        }else{
+            int winnerPlayer=-1;
+            int i=0;
+            for (Player player : players) {
+                if (player.GetMoney()>0) winnerPlayer=i++;
+            }
+            String stats="";
+            for (Player player : players) {
+                stats+="\t"+player.Name+":      "+player.GetMoney()+" kr.\n";
+            }
+            
+            JOptionPane.showMessageDialog(gameboard,"Vinderen er: \n\t"+Game.players.get(winnerPlayer).Name+"\n\nStats:\n"+stats);
+            int result = JOptionPane.showConfirmDialog(gameboard, "Vil du spille igen?");
+            switch (result) {
+                case YES_OPTION:
+                    gameboard.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+                    gameboard.gamecontrol.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+                    gameboard.gamecontrol.dispose();
+                    gameboard.dispose();
+                    initializeMain();
+                    break;
+                case NO_OPTION:
+                    gameboard.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    gameboard.dispose();
+                    System.exit(0);
+                    break;
+            }
+        }
+    }
     public static void GA_JailThrowDice() {
         if (JailDiceTries<3) {
             Player player = players.get(currentPlayer);

@@ -88,6 +88,10 @@ public class GameBoard extends javax.swing.JFrame {
                     mapBoard1.whackKeyDown=false;
                     easteregg.stopSound();
                 }
+                if (keycode==KeyEvent.VK_F5) {
+                    Game.generateColor();
+                    refreshGameControl();
+                }
             }
         });
         
@@ -150,7 +154,8 @@ public class GameBoard extends javax.swing.JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
+                Game.nextPlayer();
+                //Game.currentPlayer=(Game.currentPlayer+1)%Game.players.size();
                 clearGameControl();
             }
         });
