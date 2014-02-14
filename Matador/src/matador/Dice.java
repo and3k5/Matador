@@ -14,10 +14,14 @@ public class Dice {
     // Number of dice
     public int number;
     
-    public Dice() {
+    public Dice() 
+    {
+        //Sets the base number of dice to 1
         this.number = 1;
     }
-    public void Throw() {
+    public void Throw() 
+    {
+        //Gives a random number from 1-6 (A normal 6 sided dice)
         this.number=(int)(1+Math.random()*6);
     }
 }

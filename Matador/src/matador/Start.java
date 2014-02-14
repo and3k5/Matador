@@ -14,11 +14,13 @@ public class Start extends Field{
     @Override
     public void Lands(Player P)
     {
+        //If player lands on start increase money with 4000
         P.ChangeMoney(4000);
     }
     @Override
     public void Passed(Player P)
     {
+        //If player passes start increase money with 4000
         P.ChangeMoney(4000);
     }
     

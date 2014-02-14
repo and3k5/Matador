@@ -12,11 +12,11 @@ import java.awt.Color;
  *
  * @author and3k5
  */
-public class Player {
-    /*
-    * Sets the players Money, Playing Color, Name, Where he is on the board,
-    * if hes in prison and if he have a get out of prison card.
-    */
+public class Player 
+{
+    //Sets the players Money, Playing Color, Name, Where he is on the board,
+    //if hes in prison and if he have a get out of prison card.
+    
     private int Money;
     public Color Color;
     public String Name;
@@ -27,9 +27,7 @@ public class Player {
     
     public Player()
     {
-        /*
-        * Sets the players starts variables
-        */
+        //Sets the players starts variables
         
         Money = 50000;
         Color = new Color(0,0,0);
@@ -42,22 +40,20 @@ public class Player {
     
     public int GetMoney()
     {
-        /*
-        * Returns Money publicly
-        */
-        
+        //Returns Money publicly
         return Money;
     }
-    public int ChangePosition(int p) {
+    public int ChangePosition(int p) 
+    {
+        //Changes the position of the player
         int fields=Game.fields.size();
         return Position=((Position+p)%fields+fields)%fields;
     }
     public int ChangeMoney(int value)
     {
-        /*
-        * Changes the money you have if you pass start, are parking,
-        * Income Tax or State Tax and so on.
-        */
+        //Changes the money you have if you pass start, are parking,
+        //Income Tax or State Tax and so on.
+        
         Money = Money + value;
         return Money;
     } 

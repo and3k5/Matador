@@ -10,7 +10,9 @@ package matador;
  *
  * @author and3k5
  */
-public class Parking extends Field{
+public class Parking extends Field
+{
+    //Increases your money with 4000 if you land on it.
     public int Payout = 4000;
     @Override
     public void Lands(Player P)

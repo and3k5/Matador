@@ -26,6 +26,7 @@ public class Street extends Field {
     
     public Street()
     {
+        //Constructor for some base values
         Price = 0;
         Owner = -1;
         Houses = 0;
@@ -43,6 +44,7 @@ public class Street extends Field {
         //If nobody owns it      
         if (Owner == -1)
         {
+            //Ask if you want to buy it
             Game.requestBuy(P, this);
         }
         //If enemy lands on yours, a payout must happen
@@ -50,10 +52,14 @@ public class Street extends Field {
         {
             if ((Game.players.get(Owner)).InPrison == false)
             {
+                //Changes the pay to the rent for the street
                 int Pay;
                 Pay = Taxes[0];
+                //Shows message with how much you pay
                 JOptionPane.showMessageDialog(null, "Du betaler leje: " + Pay + " til ejeren");
+                //Reduces current players money
                 P.ChangeMoney(-Pay);
+                //Increases owners money
                 (Game.players.get(Owner)).ChangeMoney(Pay);
             }
         }
