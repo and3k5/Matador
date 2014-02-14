@@ -99,7 +99,7 @@ public class EasterEggSound {
 
                         // TODO code application logic here
                         // byte[] buf = new byte[ 1 ];
-                        af  = new AudioFormat((float) 8000, 8, 1, true, false);
+                        af  = new AudioFormat((float) 16000, 8, 1, true, false);
                         sdl = AudioSystem.getSourceDataLine(af);
                         sdl = AudioSystem.getSourceDataLine(af);
                         System.out.print("1");
@@ -108,16 +108,18 @@ public class EasterEggSound {
                         sdl.start();
                         System.out.print("3");
 
-                        byte[] buffer = new byte[1];
+                        byte[] buffer = new byte[2];
                         int    t      = 0;
 
                         while (isPlaying) {
                             for (int i = 0; i < 100 * (float) 44100 / 1000; i++) {
 
                                 // buffer[ 0 ] = (byte )(new Random().nextInt(255));
-                                t         = (t + 1) % Integer.MAX_VALUE;
-                                buffer[0] = compose8bit(t);
-                                sdl.write(buffer, 0, 1);
+                                t = (t + 1) % (Integer.MAX_VALUE);
+                                for (int j=0;j<buffer.length;j++) {
+                                    buffer[j] = compose8bit(t);
+                                }
+                                sdl.write(buffer,0,buffer.length);
 
                                 if (!isPlaying) {
                                     break;
