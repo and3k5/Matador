@@ -145,6 +145,14 @@ public class Game {
                 player.PrisonTurns=0;
                 player.ChangePosition((dices[0].number + dices[1].number));
                 Game.fields.get(player.Position).Lands(player);
+                gameboard.showJailFreeCardBtn=false;
+                gameboard.showJailPayBailBtn=false;
+                gameboard.showJailThrowDiceBtn=false;
+                gameboard.showMortgageBtn=false;
+                gameboard.showNextPlayerBtn=true;
+                gameboard.showThrowDiceBtn=false;
+                gameboard.refreshGameControl();
+                
             }else{
                 JailDiceTries++;
             }
