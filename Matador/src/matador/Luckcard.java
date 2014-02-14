@@ -17,11 +17,13 @@ public class Luckcard {
     public static String Text;
     static void TryCard(Player P)
     {
+        // the array and other variable's that is used in the file for getting the random card
         int[] Luckcards = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
         Text = "";
         int length = Luckcards.length;
         int randomcard;
         randomcard = new Random().nextInt(length-1);
+        //switch case with the diffrent Luck cards in the game
         switch (Luckcards[randomcard]){
             case 1:
                 Text = "Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer 'START', indkasserer De ikke kr. 4000.";
@@ -229,6 +231,7 @@ public class Luckcard {
                 break;
         }
     }
+    // function used for getting the double value from shipping lines (From a luck card)(Same function as one that is inside the shippinglines class)
     private static void SLDouble(Player P)
     {
         ShippingLines SL = (ShippingLines)Game.fields.get(P.Position);
