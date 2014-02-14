@@ -57,10 +57,17 @@ public class MapBoard extends javax.swing.JPanel {
                 mouse=e.getPoint();
             }
         });
-        posBuffer = new ArrayList<>();
-        for (int i=0;i<Game.players.size();i++) {
-            posBuffer.add(0.0);
+        try {
+            posBuffer = new ArrayList<>();
+            for (int i=0;i<Game.players.size();i++) {
+                posBuffer.add(0.0);
+            }
         }
+        catch (NullPointerException err) {
+            // Stupid netbeans.
+            System.out.println("Error: "+err.getMessage());
+        }
+        
         try {
             diceimg=ImageIO.read(new File("images/DICE.png"));
         } catch (IOException ex) {
