@@ -16,6 +16,7 @@ public class TryLuck extends Field {
     @Override
     public void Lands(Player P)
     {
+        //gets a random card from the array inside of the Luckcard function
         Luckcard.TryCard(P);
         Object[] options = new Object[1];
         options[0] = "Dit held";

@@ -10,13 +10,16 @@ package matador;
  *
  * @author and3k5
  */
+//just the class which we extend from
 public class Field {
     public void Passed(Player p)
     {
+        //Player Passes and nothing happens
         
     }
     public void Lands(Player p)
     {
+        //Player lands and nothing happens
         
     }
 }
